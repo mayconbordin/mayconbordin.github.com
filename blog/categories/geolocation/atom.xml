@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Geolocation | My Octopress Blog]]></title>
+  <link href="http://mayconbordin.github.com/blog/categories/geolocation/atom.xml" rel="self"/>
+  <link href="http://mayconbordin.github.com/"/>
+  <updated>2012-08-30T19:05:33-03:00</updated>
+  <id>http://mayconbordin.github.com/</id>
+  <author>
+    <name><![CDATA[Maycon Bordin]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[geo.js: Geolocation and Geocoding (pure) JavaScript library]]></title>
+    <link href="http://mayconbordin.github.com/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/"/>
+    <updated>2012-01-15T15:02:00-02:00</updated>
+    <id>http://mayconbordin.github.com/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library</id>
+    <content type="html"><![CDATA[<p>Some people may know the <a href="http://code.google.com/p/geo-location-javascript/">geo-location-javascript</a>, it supports, besides W3C Geolocation API, several other devices and platforms. I've used it before, but I always thought it could do better. I mean, it could be more flexible, support more alternatives, like GeoIP.</p>
+
+<p>So I started to search for alternative libraries, until I found <a href="https://github.com/rmoriz/locate_me">locate_me</a>, this library doesn't support so many platforms as geo-location-javascript, but it has support for providers, in the way that I can write my own geolocation providers. But it has some drawbracks, like not following the W3C Geolocation interface and not offering the polling functions (watchPosition and clearWatch). It also relies on Prototype, although some people don't see this as a disadvantage.</p>
+
+<p>As I could not find any other library that could fulfill my needs, I built my own. It has support for all the platforms supported by geo-location-javascript, plus geoip services, and it also support custom location providers. In addition, it support geocoding providers, so that when you receive the device's location, you can geocode it to obtain its address.</p>
+
+<p>This library has the same interface that of W3C Geolocation API, including the polling functionality. The polling functions are provided by the native device's APIs, when enabled, and when the API has no support for it, the library uses his own implementation of watchPosition and clearWatch.</p>
+
+<!-- more -->
+
+
+<h2>Supported platforms</h2>
+
+<ul>
+<li>W3C Geolocation API</li>
+<li>iOS</li>
+<li>Android</li>
+<li>BlackBerry OS</li>
+<li>Browsers with Google Gears support</li>
+<li>Nokia Web Run-Time</li>
+<li>webOS Application Platform</li>
+<li>Torch Mobile Iris Browser</li>
+<li>Mozilla Geode</li>
+</ul>
+
+
+<p><strong>GeoIP Services</strong></p>
+
+<ul>
+<li>freegeoip.net</li>
+<li>geoip.pidgets.com</li>
+<li>geoplugin.com</li>
+</ul>
+
+
+<p><strong>Reverse Geocoding Service</strong></p>
+
+<ul>
+<li>Google Geocoding API</li>
+<li>GeoNames</li>
+<li>Nominatim OpenStreetMap</li>
+</ul>
+
+
+<h2>Getting Started</h2>
+
+<p>Include the gears_init.js, util.js and geo.js libraries in your html:</p>
+
+<p>``` html</p>
+
+<script src="http://code.google.com/apis/gears/gears_init.js"></script>
+
+
+<script src="js/util.js"></script>
+
+
+<script src="js/geo.js"></script>
+
+
+<p>```</p>
+
+<p>Now you can start the library:</p>
+
+<p><code>javascript
+Geo.init();
+</code></p>
+
+<p>This is the default starter, the library will try to find the first available location provider to use. But you can give a provider to the initializer, as a string or object:</p>
+
+<p>``` javascript
+Geo.init('W3C');</p>
+
+<p>//or</p>
+
+<p>Geo.init(new Geo.LocationProvider.W3C());
+```</p>
+
+<p>To get the user location you just do this:</p>
+
+<p>``` javascript
+if (Geo.init()) {</p>
+
+<pre><code>Geo.getCurrentPosition(function(p) {
+    console.log(p);
+}, function(e) {
+    console.log("Error " + e.code + ": " + e.message);
+});
+</code></pre>
+
+<p>}
+```</p>
+
+<h2>Methods</h2>
+
+<p>The Geo object will provide, besides the init(), the following methods:</p>
+
+<ul>
+<li><code>getCurrentPosition(successCallback, errorCallback, options)</code> try to get the current position of the device, passing it to the successCallback. In case of error, errorCcallback is called.</li>
+<li><code>watchPosition(successCallback, errorCallback, options)</code> the arguments work the same way as before. But this method will call the successCallback every time the device's position changes. It also returns an ID corresponding to the watcher. Some APIs have this method natively implemented, in these cases this library just redirects the call, but if the API has no support, the library uses an own implementation.</li>
+<li><code>clearWatch(watchId)</code> stops the watcher created with the method above.</li>
+</ul>
+
+
+<p>The options argument, is an object that can have one or more of those attributes:</p>
+
+<ul>
+<li>boolean enableHighAccuracy</li>
+<li>long timeout</li>
+<li>long maximumAge</li>
+</ul>
+
+
+<p>Other methods:</p>
+
+<ul>
+<li><code>getIPAddress()</code> returns the device's IP address.</li>
+<li><code>autoSetLocationProvider()</code> automatically chooses the location provider.</li>
+<li><code>setLocationProvider(p)</code> set the location provider to be used. Can be, as in the init() a string or object instance.</li>
+</ul>
+
+
+<h2>Create your own Location Provider</h2>
+
+<p>This library has been built to enable the usage of custom location providers, the following example shows how to do that:</p>
+
+<p>``` javascript
+// This is just a dummy provider
+Geo.LocationProvider.MyProvider = Geo.LocationProvider.Base.extend({
+getCurrentPosition: function(successCallback, errorCallback, options) {</p>
+
+<pre><code>   successCallback(this.parseResult({
+      latitude: -37,
+      longitude: 11
+   }));
+}
+</code></pre>
+
+<p>});
+Geo.LocationProvider.MyProvider.available = function() {</p>
+
+<pre><code>return true;
+</code></pre>
+
+<p>};</p>
+
+<p>Geo.init('MyProvider');
+```</p>
+
+<p>Your location providers must be placed before the Geo.init() in order to be included in the provider auto selection. They also need to be created as an attribute of Geo.LocationProvider object to be registered.</p>
+
+<h2>Default Providers</h2>
+
+<p>This is the list of the default providers:</p>
+
+<ul>
+<li>W3C</li>
+<li>Gears</li>
+<li>Bondi</li>
+<li>Mojo</li>
+<li>Nokia</li>
+<li>FreeGeoIp</li>
+<li>GeoIpPidgets</li>
+<li>GeoPlugin</li>
+</ul>
+
+
+<h2>Reverse Geocoding</h2>
+
+<p>This library also support (reverse) geocoding providers. The Geo.Position object has a method for reversing geocoding his coordinates:</p>
+
+<p>``` javascript
+Geo.init();
+Geo.getCurrentPosition(success_callback);</p>
+
+<p>function success_callback(p) {
+p.geocode(function(data) {</p>
+
+<pre><code>   console.log(p);
+});
+</code></pre>
+
+<p>}
+```</p>
+
+<p>When you call the geocode() method, the callback is optional, because the function will set the address retrieved by geocoding in the p object. Although there is a Geo.Address object, it is not used when doing geocoding because the Google Geocoding API can return several address components (<a href="http://code.google.com/intl/en/apis/maps/documentation/geocoding/#Types">see</a>).</p>
+
+<p>Currently there is three geocoding providers available ('Google', 'GeoNames', 'Nominatim'). When calling the geocode() method, you can also provide to the function the geocoding provider that you would like to use:</p>
+
+<p>``` javascript
+p.geocode(function(data) {
+console.log(p);
+}, 'Google');</p>
+
+<p>// or</p>
+
+<p>p.geocode(function(data) {
+console.log(p);
+}, new Geo.CodingProvider.GeoNames());
+```</p>
+
+<p>In order to use the Google Geocoding API you need to include the GMaps library in your html:</p>
+
+<p>``` html</p>
+
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+
+<p>```</p>
+
+<p>And if you're using the GeoNames service, you need to <a href="http://www.geonames.org/login">create an account</a>, login into your account and <a href="http://www.geonames.org/manageaccount">enable free web services</a>, and then inform the library what's your username:</p>
+
+<p>``` javascript
+if (Geo.init()) {</p>
+
+<pre><code>// provide your username to use the geonames web service
+Geo.CodingProvider.GeoNames.username = 'myusername';
+Geo.getCurrentPosition(success_callback, error_callback);
+
+function success_callback(p) {
+   p.geocode(function(data) {
+      console.log(data);
+   }, 'GeoNames');
+}
+
+function error_callback(p) {
+   console.log(p);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>You can also write your own geocoder:</p>
+
+<p>``` javascript
+Geo.CodingProvider.MyGeocoder = Class.extend({
+// this is the method called when geocode the Geo.Position object p</p>
+
+<pre><code>geocode: function(p, callback) {
+   // call the geocoding service using jsonp or through a proxy (ajax)
+   // and then if there is a callback return the result
+   if (callback) callback(results);
+
+   // you need also to set the address in the Geo.Position object p
+   p.address = results;
+}
+</code></pre>
+
+<p>});</p>
+
+<p>// here you check if the service is available
+Geo.CodingProvider.MyGeocoder.available = function() {</p>
+
+<pre><code>return true;
+</code></pre>
+
+<p>};
+```</p>
+
+<p>Like the location providers, the geocoding providers must be placed before the Geo.init() call.</p>
+
+<p><a href="https://github.com/mayconbordin/geo.js/zipball/master">Download</a> | <a href="https://github.com/mayconbordin/geo.js">Github</a></p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Obter a hora certa via Internet com Java - My Octopress Blog</title>
+  <meta name="author" content="Maycon Bordin">
+
+  
+  <meta name="description" content="Se você precisa obter a hora atual com confiabilidade, é possível fazer isso através do protocolo NTP (Network Time Protocol). No mundo todo a hora &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mayconbordin.github.com/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:mayconbordin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Obter a Hora Certa via Internet Com Java</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-23T18:06:00-03:00" pubdate data-updated="true">Jun 23<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Se você precisa obter a hora atual com confiabilidade, é possível fazer isso através do protocolo NTP (Network Time Protocol). No mundo todo a hora certa é padronizada através do UTC (Coordinated Universal Time), no Brasil a definição da hora fica a cargo o Observatório Nacional, e através de um acordo entre este e o NIC.br a hora certa no Brasil é distribuída gratuitamente via Internet através do projeto NTP.br. Este projeto disponibiliza vários servidores NTP para a consulta da hora certa no Brasil.</p>
+
+<p>Aqui irei mostrar um código muito simples em Java para a consulta da hora certa utilizando um dos servidores do NTP.br. Para utilizar o protocolo NTP vou fazer uso da biblioteca Apache Commons Net, <a href="https://commons.apache.org/net/download_net.cgi">disponível aqui</a>.</p>
+
+<p>A lista de servidores do NTP.br pode ser obtida <a href="http://ntp.br/">neste link</a>. No exemplo abaixo eu estou usando apenas um dos servidores, mas dependendo da necessidade de cada um seria interessante verificar se o servidor está funcionando, e em caso negativo buscar a hora em outros servidores, de preferência servidores diferentes dos do NTP.br. Você pode encontrar servidores NTP <a href="http://tf.nist.gov/tf-cgi/servers.cgi">aqui</a> e <a href="http://www.pool.ntp.org/en/">aqui</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">ntpServer</span> <span class="o">=</span> <span class="s">&quot;a.st1.ntp.br&quot;</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NTPUDPClient</span> <span class="n">timeClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">NTPUDPClient</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">InetAddress</span> <span class="n">inetAddress</span> <span class="o">=</span> <span class="n">InetAddress</span><span class="o">.</span><span class="na">getByName</span><span class="o">(</span><span class="n">ntpServer</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">TimeInfo</span> <span class="n">timeInfo</span> <span class="o">=</span> <span class="n">timeClient</span><span class="o">.</span><span class="na">getTime</span><span class="o">(</span><span class="n">inetAddress</span><span class="o">);</span>
+</span><span class='line'>    <span class="kt">long</span> <span class="n">returnTime</span> <span class="o">=</span> <span class="n">timeInfo</span><span class="o">.</span><span class="na">getReturnTime</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">Date</span> <span class="n">time</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">(</span><span class="n">returnTime</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Hora para &quot;</span> <span class="o">+</span> <span class="n">ntpServer</span> <span class="o">+</span> <span class="s">&quot;: &quot;</span> <span class="o">+</span> <span class="n">time</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnknownHostException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>   <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Como eu disse antes, você pode modificar o código para procurar a hora em vários servidores. É bom tratar estas exceptions também, chamei apenas o print por ser um exemplo simples. Considero muito útil buscar a hora em um servidor confiável principalmente quando da necessidade de se obter a hora correta, algo que pode não ser obtido quando a fonte é a máquina local. Isso é interessante quando pensamos em aplicações Java desktop rodando nas máquinas de clientes.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Maycon Bordin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-23T18:06:00-03:00" pubdate data-updated="true">Jun 23<span>rd</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>Java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mayconbordin.github.com/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/" data-via="" data-counturl="http://mayconbordin.github.com/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/06/03/contornando-o-cache-do-hibernate/" title="Previous Post: Contornando o Cache do Hibernate">&laquo; Contornando o Cache do Hibernate</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/" title="Next Post: geo.js: Geolocation and Geocoding (pure) JavaScript library">geo.js: Geolocation and Geocoding (pure) JavaScript library &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/">geo.js: Geolocation and Geocoding (pure) JavaScript library</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/">Obter a hora certa via Internet com Java</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/03/contornando-o-cache-do-hibernate/">Contornando o Cache do Hibernate</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/">StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/">Melhorando a segurança dos Cookies</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Maycon Bordin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

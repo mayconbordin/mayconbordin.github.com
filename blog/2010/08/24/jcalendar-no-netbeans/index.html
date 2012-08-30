@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>JCalendar no NetBeans - My Octopress Blog</title>
+  <meta name="author" content="Maycon Bordin">
+
+  
+  <meta name="description" content="Estou usando Java já faz alguns meses, e por estes dias me perguntei se havia algum datepicker disponível, deveria vir por padrão no Swing. Procurei &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mayconbordin.github.com/blog/2010/08/24/jcalendar-no-netbeans/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:mayconbordin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">JCalendar No NetBeans</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-08-24T13:04:00-03:00" pubdate data-updated="true">Aug 24<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Estou usando Java já faz alguns meses, e por estes dias me perguntei se havia algum datepicker disponível, deveria vir por padrão no Swing. Procurei na internet e encontrei várias soluções, algumas das melhores eram pagas, para variar. Foi então que eu encontrei o JCalendar, este me pareceu o mais bem apresentado dentre os free que encontrei.</p>
+
+<p>A última versão data do início de 2009 mas, pensando bem, quantas melhorias mais um datepicker pode precisar? E o que mais me interessou foi a possibilidade de adicionar o JCalendar na paleta de componentes do Swing, até porque ficar codificando o datepicker de uma tela é perda de tempo.</p>
+
+<!-- more -->
+
+
+<p>Em primeiro lugar é preciso baixar o JCalendar, isso pode ser feito <a href="http://www.toedter.com/download/jcalendar-1.4.zip">aqui</a> e, depois de descompactado, o único arquivo necessário será o jcalendar-1.4.jar que está dentro da pasta /lib.</p>
+
+<p>Feito isto, abra o NetBeans e vá em Ferramentas > Paleta > Componentes Swing/AWT. Com isso, deve aparecer o gerenciador de paleta, assim:</p>
+
+<p><img src="/assets/images/jcalendar-1.png" alt="Alt text" /></p>
+
+<p>Com o gerenciador aberto clique em Nova Categoria (aqui New Category) e coloque o nome que preferir para referenciar a pasta onde irão ficar os componentes do JCalendar.</p>
+
+<p><img src="/assets/images/jcalendar-2.png" alt="Alt text" /></p>
+
+<p>Clique em Adicionar do JAR (ou Add from JAR) e selecione o arquivo baixado jcalendar-1.4.jar e clique em Próximo.</p>
+
+<p><img src="/assets/images/jcalendar-3.png" alt="Alt text" /></p>
+
+<p>Vão aparecer todos os componentes disponíveis dentro deste JAR, selecione todos e vá para o Próximo passo.</p>
+
+<p><img src="/assets/images/jcalendar-4.png" alt="Alt text" /></p>
+
+<p>É só escolher a categoria onde quer que estes componentes apareçam na paleta do Swing/AWT e conclui a instalação.</p>
+
+<p><img src="/assets/images/jcalendar-5.png" alt="Alt text" /></p>
+
+<p>O gerenciador da paleta vai aparecer mostrando os componentes adicionados a categoria, é só fechá-lo e ir para um JFrame o JDialog e arrastar os componentes para a tela.</p>
+
+<p><img src="/assets/images/jcalendar-6.png" alt="Alt text" /></p>
+
+<p>O resultado, usando o JDateChooser, deve ficar assim:</p>
+
+<p><img src="/assets/images/jcalendar-7.png" alt="Alt text" /></p>
+
+<p><a href="http://www.toedter.com/en/jcalendar/api/index.html">Documentação (JCalendar API)</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Maycon Bordin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-08-24T13:04:00-03:00" pubdate data-updated="true">Aug 24<span>th</span>, 2010</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>Java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mayconbordin.github.com/blog/2010/08/24/jcalendar-no-netbeans/" data-via="" data-counturl="http://mayconbordin.github.com/blog/2010/08/24/jcalendar-no-netbeans/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2010/07/09/alguns-comandos-sql-uteis-em-oracle/" title="Previous Post: Alguns comandos SQL úteis em Oracle">&laquo; Alguns comandos SQL úteis em Oracle</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/" title="Next Post: Melhorando a segurança dos Cookies">Melhorando a segurança dos Cookies &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/">geo.js: Geolocation and Geocoding (pure) JavaScript library</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/">Obter a hora certa via Internet com Java</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/03/contornando-o-cache-do-hibernate/">Contornando o Cache do Hibernate</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/">StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/">Melhorando a segurança dos Cookies</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Maycon Bordin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

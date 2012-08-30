@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Alguns comandos SQL úteis em Oracle - My Octopress Blog</title>
+  <meta name="author" content="Maycon Bordin">
+
+  
+  <meta name="description" content="Em um dos projetos de faculdade que participei foi utilizado o Oracle 10g XE para o desenvolvimento de um sistema de gestão de pessoas. Acostumado &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mayconbordin.github.com/blog/2010/07/09/alguns-comandos-sql-uteis-em-oracle/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:mayconbordin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Alguns Comandos SQL úteis Em Oracle</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-07-09T19:49:00-03:00" pubdate data-updated="true">Jul 9<span>th</span>, 2010</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Em um dos projetos de faculdade que participei foi utilizado o Oracle 10g XE para o desenvolvimento de um sistema de gestão de pessoas. Acostumado com MySQL tive algumas dificuldades em princípio para me adaptar. Abaixo deixo alguns comandos SQL que utilizei bastante.</p>
+
+<!-- more -->
+
+
+<h2>Paginação</h2>
+
+<p>Para quem está acostumado com o LIMIT e o OFFSET do MySQL e PostgreSQL, usar paginação no Oracle se torna chato, isso porque para limitar a quantidade de resultados que se deseja recuperar é preciso fazer uma sub-query. Assim sendo, o SQL ficaria desta forma:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="p">(</span> <span class="k">SELECT</span> <span class="n">codigo</span><span class="p">,</span> <span class="n">nome</span><span class="p">,</span> <span class="n">row_number</span><span class="p">()</span> <span class="n">OVER</span><span class="p">(</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">codigo</span> <span class="p">)</span> <span class="n">rn</span> <span class="k">FROM</span> <span class="n">pessoas</span> <span class="p">)</span> <span class="k">WHERE</span> <span class="n">rn</span> <span class="o">&gt;=</span> <span class="mi">10</span> <span class="k">AND</span> <span class="n">rn</span> <span class="o">&lt;=</span> <span class="mi">20</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">rn</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Neste comando eu estou selecionando o código e o nome das pessoas ordenadas pelo seu código, à partir do registro 10 até o 20.</p>
+
+<h2>Resgatar datas formatadas e inserir datas</h2>
+
+<p>Converter datas não chega a ser algo complicado ou que careça de informações a respeito, de qualquer forma abaixo estão os exemplos para selecionar datas formatadas e para inseri-lás:</p>
+
+<figure class='code'><figcaption><span>Recuperar a data</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="n">campo_data</span><span class="p">,</span> <span class="s1">&#39;DD/MM/YYYY&#39;</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">nome_tabela</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>Recuperar a data e hora</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="n">campo_data</span><span class="p">,</span> <span class="s1">&#39;DD/MM/YYYY HH24:MI:SS&#39;</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">nome_tabela</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Para salvar a data é preciso converter a string da seguinte forma:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">nome_tabela</span> <span class="k">VALUES</span><span class="p">(</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="s1">&#39;05/10/2010 10:20:55&#39;</span><span class="p">,</span> <span class="s1">&#39;DD/MM/YYYY HH24:MI:SS&#39;</span><span class="p">)</span> <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Converter UNIX EPOCH DATE para Date</h2>
+
+<p>O módulo o qual eu estava responsável por desenvolver seria feito todo em PHP, e eu pensando em facilitar minha vida utilizei um sistema de autenticação que eu havia desenvolvido algum tempo atrás usando MySQL. E bom se fosse apenas trocar a connection string e banco utilizado na classe de abstração da aplicação.</p>
+
+<p>Longe disso, meu problema estava no armazenamento das datas em epoch time. Eu precisava visualizar elas em formato de data, mas queria manter no banco de dados apenas o integer(11) para não precisar modificar as classes que faziam cálculos com datas.</p>
+
+<p>Depois de algumas buscas encontrei uma solução:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="n">TO_DATE</span><span class="p">(</span> <span class="s1">&#39;1970-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;YYYY-MM-DD&#39;</span> <span class="p">)</span> <span class="o">+</span> <span class="n">numtodsinterval</span><span class="p">(</span> <span class="n">campo_para_converter</span> <span class="p">,</span> <span class="s1">&#39;SECOND&#39;</span> <span class="p">),</span> <span class="s1">&#39;YYYY-MM-DD&#39;</span> <span class="p">)</span> <span class="k">AS</span> <span class="k">data</span> <span class="k">FROM</span> <span class="n">nome_tabela</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="n">TO_DATE</span><span class="p">(</span> <span class="s1">&#39;1970-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;YYYY-MM-DD&#39;</span> <span class="p">)</span> <span class="o">+</span> <span class="n">numtodsinterval</span><span class="p">(</span> <span class="n">epoch_para_converter</span> <span class="p">,</span> <span class="s1">&#39;SECOND&#39;</span> <span class="p">),</span> <span class="s1">&#39;YYYY-MM-DD&#39;</span> <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Auto incremento</h2>
+
+<p>Quem começa a usar Oracle sente, no começo, falta do checkbox de auto incremento ou do tipo de dados Serial do PostgreSQL. Este último funciona exatamente como o Oracle, só que de uma forma mais facilitada. No Oracle, é preciso criar uma sequence e depois uma trigger que irá adicionar o valor sequencial ao campo desejado em toda inserção realizada.</p>
+
+<p>Temos a seguinte tabela:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">pessoas</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">codigo</span> <span class="nb">Integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">nome</span> <span class="n">Varchar2</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'><span class="o">/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Agora precisamos criar uma sequence que servirá para a &#8220;criação do campo&#8221; auto-incremento:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="n">SEQUENCE</span> <span class="n">seq_pessoas_codigo</span>
+</span><span class='line'> <span class="n">NOMAXVALUE</span>
+</span><span class='line'> <span class="n">NOMINVALUE</span>
+</span><span class='line'> <span class="n">NOCACHE</span>
+</span><span class='line'><span class="o">/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>No comando acima eu não informei MINVALUE, MAXVALUE, START WITH e INCREMENT BY. Eles servem respectivamente para determinar o valor mínimo da sequência, o valor máximo que ela pode alcançar, por qual valor ela iniciará e de quanto em quanto este valor será incrementado. O cache da sequence serve para armazenar na memória determinada quantidade de valores futuros, o problema é que se ocorrer um problema os valores não utilizados serão perdidos e ocorrerá um gap entre o último valor salvo e o próximo a ser utilizado. Depois de criada a sequence é preciso criar o trigger que vai fazer a inserção do valor sequencial no campo especificado.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TRIGGER</span> <span class="n">ts_pessoas_codigo_seq</span> <span class="k">BEFORE</span> <span class="k">INSERT</span>
+</span><span class='line'><span class="k">ON</span> <span class="n">pessoas</span> <span class="k">FOR</span> <span class="k">EACH</span> <span class="k">ROW</span>
+</span><span class='line'><span class="k">BEGIN</span>
+</span><span class='line'>  <span class="k">SELECT</span> <span class="n">seq_pessoas_codigo</span><span class="p">.</span><span class="n">nextval</span> <span class="k">INTO</span> <span class="p">:</span><span class="k">new</span><span class="p">.</span><span class="n">codigo</span> <span class="k">FROM</span> <span class="n">DUAL</span><span class="p">;</span>
+</span><span class='line'><span class="k">END</span><span class="p">;</span>
+</span><span class='line'><span class="o">/</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TRIGGER</span> <span class="n">tsu_pessoas_codigo_seq</span> <span class="k">AFTER</span> <span class="k">UPDATE</span> <span class="k">OF</span> <span class="n">codigo</span>
+</span><span class='line'><span class="k">ON</span> <span class="n">pessoas</span> <span class="k">FOR</span> <span class="k">EACH</span> <span class="k">ROW</span>
+</span><span class='line'><span class="k">BEGIN</span>
+</span><span class='line'>  <span class="n">RAISE_APPLICATION_ERROR</span><span class="p">(</span><span class="o">-</span><span class="mi">20010</span><span class="p">,</span><span class="s1">&#39;Não foi possível atualizar a coluna codigo na tabela pessoas pois ela utiliza sequência.&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">END</span><span class="p">;</span>
+</span><span class='line'><span class="o">/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>No comando acima foram criadas duas triggers. A primeira vai inserir o próximo valor da sequência seq_pessoas_codigo no campo codigo da tabela pessoas antes da inserção de um registro ocorrer. Enquanto que a segunda trigger vai disparar um erro caso alguém tente atualizar  o campo codigo da tabela pessoas.</p>
+
+<p>E  quem precisa resgatar o código inserido pode utilizar o comando abaixo, lembrando que se outros registros forem inseridos ao mesmo tempo corre-se o risco de recuperar o código errado, infelizmente desconheço outra solução.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">seq_pessoas_codigo</span><span class="p">.</span><span class="n">currval</span> <span class="k">FROM</span> <span class="n">dual</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>De forma geral, o uso de sequences é bem fácil e na maior parte dos casos funciona muito bem, e pra quem acha chato ficar criando tantos comandos existem ferramentas de modelagem que se encarregam da criação das triggers, a única coisa que precisa ser feita é a vinculação da sequence com o campo desejado. Para quem se interessar, o TOAD Data Modeler faz o trabalho muito bem, pena que não seja gratuito.</p>
+
+<p>Em outros casos o uso de sequences pode ser um problema, principalmente se não pode haver gaps entre os códigos sequenciais. Nestes casos acredito que a melhor forma seja criar uma tabela que armazene os próximos valores e que isso seja controlado através da aplicação.</p>
+
+<p>O Oracle é sem dúvida alguma um dos melhores SGBDs no mercado e vale muito a pena fazer ao menos alguns testes com ele. Apesar dele possuir algumas peculiaridades, de forma alguma isso o torna mais complicado de utilizar. Existe muita documentação e quem quiser testar pode baixar a versão 10g XE que é gratuita para desenvolvimento.</p>
+
+<h2>Links úteis:</h2>
+
+<ul>
+<li><a href="http://www.oracle.com/technology/products/database/xe/index.html">Oracle 10g XE</a></li>
+<li><a href="http://www.oracle.com/technology/documentation/index.html">Documentações Oracle</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Maycon Bordin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-07-09T19:49:00-03:00" pubdate data-updated="true">Jul 9<span>th</span>, 2010</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/oracle/'>Oracle</a>, <a class='category' href='/blog/categories/sql/'>SQL</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mayconbordin.github.com/blog/2010/07/09/alguns-comandos-sql-uteis-em-oracle/" data-via="" data-counturl="http://mayconbordin.github.com/blog/2010/07/09/alguns-comandos-sql-uteis-em-oracle/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2010/08/24/jcalendar-no-netbeans/" title="Next Post: JCalendar no NetBeans">JCalendar no NetBeans &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/">geo.js: Geolocation and Geocoding (pure) JavaScript library</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/">Obter a hora certa via Internet com Java</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/03/contornando-o-cache-do-hibernate/">Contornando o Cache do Hibernate</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/">StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/">Melhorando a segurança dos Cookies</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Maycon Bordin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

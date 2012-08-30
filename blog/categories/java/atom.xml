@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Java | My Octopress Blog]]></title>
+  <link href="http://mayconbordin.github.com/blog/categories/java/atom.xml" rel="self"/>
+  <link href="http://mayconbordin.github.com/"/>
+  <updated>2012-08-30T19:05:33-03:00</updated>
+  <id>http://mayconbordin.github.com/</id>
+  <author>
+    <name><![CDATA[Maycon Bordin]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Obter a hora certa via Internet com Java]]></title>
+    <link href="http://mayconbordin.github.com/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/"/>
+    <updated>2011-06-23T18:06:00-03:00</updated>
+    <id>http://mayconbordin.github.com/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java</id>
+    <content type="html"><![CDATA[<p>Se você precisa obter a hora atual com confiabilidade, é possível fazer isso através do protocolo NTP (Network Time Protocol). No mundo todo a hora certa é padronizada através do UTC (Coordinated Universal Time), no Brasil a definição da hora fica a cargo o Observatório Nacional, e através de um acordo entre este e o NIC.br a hora certa no Brasil é distribuída gratuitamente via Internet através do projeto NTP.br. Este projeto disponibiliza vários servidores NTP para a consulta da hora certa no Brasil.</p>
+
+<p>Aqui irei mostrar um código muito simples em Java para a consulta da hora certa utilizando um dos servidores do NTP.br. Para utilizar o protocolo NTP vou fazer uso da biblioteca Apache Commons Net, <a href="https://commons.apache.org/net/download_net.cgi">disponível aqui</a>.</p>
+
+<p>A lista de servidores do NTP.br pode ser obtida <a href="http://ntp.br/">neste link</a>. No exemplo abaixo eu estou usando apenas um dos servidores, mas dependendo da necessidade de cada um seria interessante verificar se o servidor está funcionando, e em caso negativo buscar a hora em outros servidores, de preferência servidores diferentes dos do NTP.br. Você pode encontrar servidores NTP <a href="http://tf.nist.gov/tf-cgi/servers.cgi">aqui</a> e <a href="http://www.pool.ntp.org/en/">aqui</a>.</p>
+
+<p>``` java</p>
+
+<pre><code>try {
+    String ntpServer = "a.st1.ntp.br";
+
+    NTPUDPClient timeClient = new NTPUDPClient();
+    InetAddress inetAddress = InetAddress.getByName(ntpServer);
+    TimeInfo timeInfo = timeClient.getTime(inetAddress);
+    long returnTime = timeInfo.getReturnTime();
+    Date time = new Date(returnTime);
+    System.out.println("Hora para " + ntpServer + ": " + time);
+} catch (UnknownHostException ex) {
+    ex.printStackTrace();
+}   catch (IOException ex) {
+    ex.printStackTrace();
+}
+</code></pre>
+
+<p>```</p>
+
+<p>Como eu disse antes, você pode modificar o código para procurar a hora em vários servidores. É bom tratar estas exceptions também, chamei apenas o print por ser um exemplo simples. Considero muito útil buscar a hora em um servidor confiável principalmente quando da necessidade de se obter a hora correta, algo que pode não ser obtido quando a fonte é a máquina local. Isso é interessante quando pensamos em aplicações Java desktop rodando nas máquinas de clientes.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Contornando o Cache do Hibernate]]></title>
+    <link href="http://mayconbordin.github.com/blog/2011/06/03/contornando-o-cache-do-hibernate/"/>
+    <updated>2011-06-03T14:28:00-03:00</updated>
+    <id>http://mayconbordin.github.com/blog/2011/06/03/contornando-o-cache-do-hibernate</id>
+    <content type="html"><![CDATA[<p>Dica rápida: quando você carrega um objeto utilizando Hibernate, modifica o mesmo e salva (utilizando <code>update()</code>, <code>merge()</code> ou <code>saveOrUpdate()</code>) e em outra funcionalidade de seu aplicativo obtém novamente o mesmo objeto através do Hibernate é comum que seja retornado o objeto em cache, com os valores desatualizados. Admito ter demorado mais de uma hora para encontrar uma alternativa que não fosse desabilitar o cache. Para a minha alegria, isso funcionou:</p>
+
+<p><code>java
+Objeto obj = (Objeto) session.get(Objeto.class, id);
+session.refresh(obj);
+</code></p>
+
+<p>Quando o método <code>refresh()</code> é chamado, ocorre a releitura do objeto no banco de dados, trazendo o último estado do objeto, ignorando o objeto em cache (ou atualizando, desconheço o funcionamento em detalhes). Testei os métodos <code>flush()</code> (semelhante ao <code>commit()</code>) e <code>clear()</code>, mas nenhum deles conseguiu resgatar o último estado do objeto. Ou é desconhecimento de minha parte, ou o Hibernate não atualiza o cache depois de realizada uma alteração em algum objeto da sessão. Se existe alguma forma de avisar o Hibernate sobre a alteração para que ele atualize o objeto em cache, desconheço.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JCalendar no NetBeans]]></title>
+    <link href="http://mayconbordin.github.com/blog/2010/08/24/jcalendar-no-netbeans/"/>
+    <updated>2010-08-24T13:04:00-03:00</updated>
+    <id>http://mayconbordin.github.com/blog/2010/08/24/jcalendar-no-netbeans</id>
+    <content type="html"><![CDATA[<p>Estou usando Java já faz alguns meses, e por estes dias me perguntei se havia algum datepicker disponível, deveria vir por padrão no Swing. Procurei na internet e encontrei várias soluções, algumas das melhores eram pagas, para variar. Foi então que eu encontrei o JCalendar, este me pareceu o mais bem apresentado dentre os free que encontrei.</p>
+
+<p>A última versão data do início de 2009 mas, pensando bem, quantas melhorias mais um datepicker pode precisar? E o que mais me interessou foi a possibilidade de adicionar o JCalendar na paleta de componentes do Swing, até porque ficar codificando o datepicker de uma tela é perda de tempo.</p>
+
+<!-- more -->
+
+
+<p>Em primeiro lugar é preciso baixar o JCalendar, isso pode ser feito <a href="http://www.toedter.com/download/jcalendar-1.4.zip">aqui</a> e, depois de descompactado, o único arquivo necessário será o jcalendar-1.4.jar que está dentro da pasta /lib.</p>
+
+<p>Feito isto, abra o NetBeans e vá em Ferramentas > Paleta > Componentes Swing/AWT. Com isso, deve aparecer o gerenciador de paleta, assim:</p>
+
+<p><img src="/assets/images/jcalendar-1.png" alt="Alt text" /></p>
+
+<p>Com o gerenciador aberto clique em Nova Categoria (aqui New Category) e coloque o nome que preferir para referenciar a pasta onde irão ficar os componentes do JCalendar.</p>
+
+<p><img src="/assets/images/jcalendar-2.png" alt="Alt text" /></p>
+
+<p>Clique em Adicionar do JAR (ou Add from JAR) e selecione o arquivo baixado jcalendar-1.4.jar e clique em Próximo.</p>
+
+<p><img src="/assets/images/jcalendar-3.png" alt="Alt text" /></p>
+
+<p>Vão aparecer todos os componentes disponíveis dentro deste JAR, selecione todos e vá para o Próximo passo.</p>
+
+<p><img src="/assets/images/jcalendar-4.png" alt="Alt text" /></p>
+
+<p>É só escolher a categoria onde quer que estes componentes apareçam na paleta do Swing/AWT e conclui a instalação.</p>
+
+<p><img src="/assets/images/jcalendar-5.png" alt="Alt text" /></p>
+
+<p>O gerenciador da paleta vai aparecer mostrando os componentes adicionados a categoria, é só fechá-lo e ir para um JFrame o JDialog e arrastar os componentes para a tela.</p>
+
+<p><img src="/assets/images/jcalendar-6.png" alt="Alt text" /></p>
+
+<p>O resultado, usando o JDateChooser, deve ficar assim:</p>
+
+<p><img src="/assets/images/jcalendar-7.png" alt="Alt text" /></p>
+
+<p><a href="http://www.toedter.com/en/jcalendar/api/index.html">Documentação (JCalendar API)</a></p>
+]]></content>
+  </entry>
+  
+</feed>

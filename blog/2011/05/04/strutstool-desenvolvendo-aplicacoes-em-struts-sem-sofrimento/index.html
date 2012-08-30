@@ -1,0 +1,508 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento - My Octopress Blog</title>
+  <meta name="author" content="Maycon Bordin">
+
+  
+  <meta name="description" content="Um dos aspectos que mais chama a atenção no desenvolvimento de aplicações com Struts é a quantidade de passos necessários para criar aplicações &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mayconbordin.github.com/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:mayconbordin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">StrutsTool: Desenvolvendo Aplicações Em Struts Sem Sofrimento</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-05-04T17:21:00-03:00" pubdate data-updated="true">May 4<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Um dos aspectos que mais chama a atenção no desenvolvimento de aplicações com Struts é a quantidade de passos necessários para criar aplicações relativamente simples. Quem já usou sabe como é custoso criar um simples CRUD.</p>
+
+<p>Isso trás grande frustração para quem desenvolve aplicações web, inclusive eu. Isso se dá principalmente pois o Struts necessita de extensa configuração. Cada action que você cria precisa ser mapeada em um arquivo xml, se você usar Tiles o negócio é pior ainda, é xml para todo lado.</p>
+
+<p>O pior é que isso acontece em outras frameworks Java, como o Spring. Porém esta adotou o uso de anotações ao invés de xml, mas não deixa de ser configuração. Fato é que com as anotações você não precisa criar tantos arquivos, mas ainda assim precisa escrever muitas linhas para fazer a coisa funcionar.</p>
+
+<p>Com uma rápida busca na internet é possível encontrar diversas discussões sobre quando utilizar Java para web ou qual é a melhor dentre as frameworks para Java (a Wikipedia <a href="http://en.wikipedia.org/wiki/Comparison_of_web_application_frameworks#Java">lista</a> 35 frameworks para Java). Kelby Zorgdrager faz em um artigo uma <a href="http://olex.openlogic.com/wazi/2010/choosing-the-right-java-web-development-framework/">comparação entre frameworks Java</a>, com tabelas de pontuação para os pontos mais relevantes de uma framework. Para encurtar a história, de modo geral (não conclusivo) Struts e JSF tem as melhores notas. Entretanto, frameworks como Stripes e Tapestry tem melhores notas quando falamos em RAD, isso porque ambas se utilizam de convenção ao invés de configuração.</p>
+
+<p>Nessas horas muitos diriam para trocar de linguagem, mas isso depende muito das necessidades e recursos disponíveis para o projeto. Não vou entrar nesta discussão, a internet já está cheia delas, tendo destaque as com títulos como: “linguagem A vs linguagem B”.</p>
+
+<!-- more -->
+
+
+<h2>Porque Struts?</h2>
+
+<p>Não vou dizer que adoro esta framework, pois estaria mentindo. Digamos que a escolha desta framework foi mais uma questão de necessidade (obrigação), do contrário teria escolhido outra framework, ou outra linguagem, como Ruby (<a href="http://gaurav-asktome.blogspot.com/2011/03/java-vs-ruby-on-rails-it-is-dead-heat.html">comparação interessante entre as linguagens</a>).</p>
+
+<p>Bom, se eu tenho que utilizar Struts para desenvolver uma aplicação, ao menos posso usar meus meios para reduzir o sofrimento durante a jornada. E é exatamente o que estou fazendo, construindo uma aplicação de linha de comando inspirada em Rails para Struts 2.</p>
+
+<h2>StrutsTool</h2>
+
+<p>Pois bem, esta aplicação se chama StrutsTool (não estava muito inspirado, então me baseei no Zend_Tool mesmo) e está hospedada no <a href="http://code.google.com/p/strutstool/">Google Code</a>.</p>
+
+<p>A idéia de fazer tal ferramenta surgiu, obviamente, de uma necessidade, que era não me arrebentar para programar funcionalidades simples. E por simples, me refiro ao CRUD. Além disso, muitos arquivos precisam ser criados e modificados para se obter uma aplicação funcional em Struts.</p>
+
+<p>Quer uma amostra prática disto? Justin Gehtland <a href="http://www.theserverside.com/news/thread.tss?thread_id=33120">reescreveu uma aplicação Java em Ruby on Rails</a> e obteve os seguintes resultados:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Linhas de Código:
+</span><span class='line'>Rails: 1164
+</span><span class='line'>Java: 3293
+</span><span class='line'>
+</span><span class='line'>Número de Classes:
+</span><span class='line'>Rails: 55
+</span><span class='line'>Java: 62
+</span><span class='line'>
+</span><span class='line'>Número de Métodos:
+</span><span class='line'>Rails: 126
+</span><span class='line'>Java: 549
+</span><span class='line'>
+</span><span class='line'>Linhas de Configuração:
+</span><span class='line'>Rails: 113
+</span><span class='line'>Java: 1161</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Não é para menos. Quer outro exemplo, então dê uma olhada <a href="https://github.com/mayconbordin/JavaWebExample">neste projeto</a> que hospedei há algum tempo no Github, é apenas um exemplo simples de CRUD utilizando Struts 2, Tiles, Hibernate e Hibernate Validator. Em poucas palavras : muito código para pouca funcionalidade.</p>
+
+<p>Para deixar claro o quanto de trabalho um CRUD pode dar, você precisa:</p>
+
+<ul>
+<li>criar os arquivos .jsp</li>
+<li>criar um controlador</li>
+<li>mapeá-lo no arquivo struts.xml indicando os arquivos .jsp que irão ser exibidos</li>
+<li>se usar tiles, definir os arquivos .jsp no tiles.xml e referenciá-los no struts.xml</li>
+<li>criar a classe POJO</li>
+<li>adicionar validadores de dados ao POJO</li>
+<li>mapear a classe POJO para o Hibernate, podendo ser com anotações ou xml</li>
+<li>criar classe de acesso a dados</li>
+<li>criar classe de serviço</li>
+<li>você pode ainda querer criar um arquivo properties para armazenar as mensagens que serão usadas pelo controlador</li>
+</ul>
+
+
+<p>Foi baseado nesta aplicação de exemplo que eu comecei a criar o que viria a ser uma aplicação de base para o desenvolvimento de minhas aplicações em Struts. Se trata de um projeto com as configurações básicas para funcionar e em cima dele eu poderia adicionar as funcionalidades específicas de minhas aplicações.</p>
+
+<p>De forma simples, esta aplicação (StrutsTool) cria um projeto base e conforme você for criando novas funcionalidades (models, controladores, views, …) a ferramenta irá adicioná-las a este projeto e executar toda a configuração necessária. Ou seja, é um gerador para Struts.</p>
+
+<h2>Funcionalidades</h2>
+
+<p>Esta ferramenta provê, por enquanto, poucas funcionalidades, porém extremamente úteis. Mas antes de falar destas funcionalidades gostaria de listar as frameworks/APIs suportadas pelos projetos criados com esta ferramenta. São elas:</p>
+
+<ul>
+<li>Struts 2.2.1.1</li>
+<li>Struts2 jQuery Plugin 2.5.3</li>
+<li>Hibernate 3.6.3</li>
+<li>Hibernate Validator 4.1.0</li>
+<li>Hibernate Search 3.4.0</li>
+<li>Tiles 2.2.2</li>
+<li>HTML Compressor 1.1</li>
+<li>Closure Compiler</li>
+<li>wro4j 1.3.6</li>
+<li>YUICompressor 2.4.2</li>
+<li>Spring Framework 3.1.0</li>
+<li>displaytag 1.2</li>
+</ul>
+
+
+<p>Agora sim vamos as funcionalidades, basicamente elas são quatro: criação de projeto, scaffolding, criação de controlador e criação de modelo. Nos próximos itens estarei fazendo uma descrição mais detalhada de cada uma destas funções.</p>
+
+<h3>Criação de Projeto</h3>
+
+<p>A criação de um projeto consiste apenas em descomprimir o arquivo que contém o projeto de base para aplicações. Neste projeto não existem controladores, views ou modelos. Apenas a estrutura básica de um projeto para a IDE NetBeans, além de uma série de classes utilizadas como base para a geração de aplicações e alguns arquivos de configuração para as frameworks/APIs.</p>
+
+<h3>Scaffolding</h3>
+
+<p>Talvez uma das funcionalidades mais interessantes da ferramenta, apesar de ser pouco flexível. Assim como em Rails, é necessário apenas informar o nome da classe e os seus atributos e tipos correspondentes. Adicionalmente, a ferramenta permite adicionar o tamanho das variáveis e em caso de relacionamentos com outras classes, indicá-los.</p>
+
+<h3>Criação de Controlador e Criação de Modelo</h3>
+
+<p>A criação de controlador e model é o que o nome diz, não existe mistério. Exceto que a criação de controladores com suas actions inclui a criação das views. Em uma versão futura adicionarei a opção de não criar uma view, o que algumas vezes pode ser conveniente. Quanto a criação de modelo, ele gera a entidade com validações, mapeamento, classe de acesso a dados e de serviços.</p>
+
+<h2>Instalação do StrutsTool</h2>
+
+<p>O StrutsTool foi desenvolvido em Java, para fazer o download dele basta ir na <a href="http://code.google.com/p/strutstool/downloads/list">seção de downloads</a> do projeto e fazer o download dos arquivos StrutsTool-x.x.tar.gz (baixe sempre a última versão) e o arquivolib.zip.</p>
+
+<p>Descompacte o primeiro arquivo na pasta que achar mais conveniente. Dentro desta pasta haverá outra pasta chamada resources, coloque o arquivo lib.zip dentro dela. Para executar a ferramenta utilize o arquivostrutstool (Linux) ou strutstool.bat (Windows). Antes de executá-lo, abra-o e edite as variáveis nele declaradas, sendo elas: INSTALL_PATH (caminho da instalação do StrutsTool) e JAVA_BIN (caminho da pasta bin do Java (JRE ou JDK) ).</p>
+
+<p>Para executar o comando sem precisar estar na pasta da ferramenta você precisa, no Linux, editar o arquivo .bashrc e adicionar as seguintes linhas:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/caminho/completo/para/strutstool
+</span><span class='line'><span class="nb">export </span>PATH
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>No windows basta adicionar o caminho para o StrutsTool na variável de ambiente path.</p>
+
+<h2>Criando um Aplicativo</h2>
+
+<p>Feita a instalação, é hora de começar a utilizar a ferramenta para criar um aplicativo de exemplo, para demonstrar o que a ferramenta é capaz de fazer. Nosso aplicativo vai ser algo simples, com duas tabelas, uma de produtos e outra de marcas.</p>
+
+<p>Neste exemplo estarei utilizando o banco de dados PostgreSQL, mas qualquer outro banco suportado pelo Hibernate irá funcionar (contanto que sejam feitas as modificações no mapeamento, se necessário). O SQL para criar as tabelas é este:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">produto</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">id</span> <span class="nb">Serial</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">nome</span> <span class="nb">Character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">marca</span> <span class="nb">Integer</span> <span class="k">NOT</span> <span class="k">NULL</span>
+</span><span class='line'><span class="p">)</span> <span class="k">WITH</span> <span class="p">(</span><span class="k">OIDS</span><span class="o">=</span><span class="k">FALSE</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">produto</span> <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">pk_produto</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">marca</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">id</span> <span class="nb">Serial</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">nome</span> <span class="nb">Character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span>
+</span><span class='line'><span class="p">)</span> <span class="k">WITH</span> <span class="p">(</span><span class="k">OIDS</span><span class="o">=</span><span class="k">FALSE</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">marca</span> <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">pk_marca</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">produto</span> <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">fk_marca_produto</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">marca</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">marca</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="k">ON</span> <span class="k">DELETE</span> <span class="k">NO</span> <span class="n">ACTION</span> <span class="k">ON</span> <span class="k">UPDATE</span> <span class="k">NO</span> <span class="n">ACTION</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Criado o banco de dados, iremos agora criar um novo projeto com o StrutsTool. O comando para realizar esta operação é simples:</p>
+
+<pre><code>strutstool new project loja com.app.web
+</code></pre>
+
+<p>Este comando cria o projeto base dentro da pasta loja/. Agora vamos criar o que realmente interessa nesta aplicação através do scaffolding. Primeiro vamos criar os providers (view, modelo e controlador) para a classe Produto, assim:</p>
+
+<pre><code>strutstool scaffold Produto nome:string:100 marca:Marca
+</code></pre>
+
+<p>Após executar o comando deverá aparecer na tela todos os arquivos e pastas criados e/ou modificados. Vale ressaltar que o método scaffold parte da premissa de que o identificador da tabela é chamado id, sendo este um valor inteiro e auto-incremento (ou que use uma sequence, como neste caso (consulte a documentação do Hibernate)).</p>
+
+<p>Outro aspecto importante é o das convenções adotadas pela ferramenta. No caso do Produto, é assumido (por padrão, você pode alterar) que o nome da tabela é produto e ela tem, além da chave primária id, um campo chamado nome de tamanho 100. Além disso, é criado um controlador chamado ProdutoControllercom as actions: index, edit, add e delete.</p>
+
+<p>E nas views (pasta web/WEB-INF/) é criada a pasta produto com as páginas: index.jsp, edit.jsp e add.jsp (delete utiliza jQuery). A url para acesso a action index, por exemplo, ficaria assim:http://localhost:8084/loja/produto/index.action.</p>
+
+<p>Estas são convenções básicas adotadas em várias frameworks conhecidas, exceto o Struts (além de outros frameworks Java), mas que através desta ferramenta poupam o desenvolvedor de configurar mais do que o necessário.</p>
+
+<p>Agora vamos gerar os providers da classe Marca. Para tanto:</p>
+
+<pre><code>strutstool scaffold Marca nome:string:100 produtos:set:Produto
+</code></pre>
+
+<p>Aqui adicionamos mais um atributo a classe, produtos:set:Produto, que corresponde ao relacionamento um para muitos (one-to-many) com a classe de Produto (uma marca tem vários produtos). O set do atributo corresponde ao tipo de Collection do Java java.util.Set. Este é o único tipo de coleção suportado pela ferramenta (não consegui fazer List funcionar com o Hibernate).</p>
+
+<p>Por padrão, a ferramenta gera relacionamentos em duas direções, portanto a classe Produto poderá acessar a marca a qual pertence, bem como uma marca poderá acessar todos os seus produtos. Para quem notou, a ferramenta não checa os tipos de dados utilizados nos parâmetros. A bem da verdade, ela possui uma lista com os tipos básicos suportados e quando um tipo é desconhecido ela trata-o como um novo tipo, portanto cuidado ao informar os tipos de dados.</p>
+
+<p>Outra funcionalidade que preferi desativar era a checagem das classes existentes. Neste exemplo a classe Produto referencia a classe Marca, sendo que esta última nem sequer existe ainda. Porém, me pareceu mais prático deixar a cargo do programador cuidar destes detalhes.</p>
+
+<p>Por equanto esta ferramenta suporta apenas relacionamentos um para muitos (1:n) e muitos para um (n:1). Relacionamentos muitos para muitos (n:m) podem ser feitos com dois relacionamentos um para muitos.</p>
+
+<p>Agora que a aplicação foi gerada, é hora de abrí-la com o NetBeans e fazer algumas modificações. Basta ir em “Abrir Projeto&#8230;” e selecionar a pasta loja. É provável que o NetBeans exiba um erro sobre o arquivo build-impl.xml, isto ocorre devido a uma modificação que é feita durante a criação do projeto. Basta clicar em Regenerar e prosseguir normalmente.</p>
+
+<p>Com o projeto aberto precisamos fazer algumas coisas. Primeiro, adicionar o driver do banco de dados utilizado às bibliotecas do projeto. Depois disso, é preciso abrir o arquivo hibernate.cfg.xml e modificar as configurações do banco de dados com o qual o Hibernate irá se comunicar.</p>
+
+<p>Ainda no arquivo de configurações do Hibernate, é preciso modificar o valor da propriedade com nome hibernate.search.default.indexBase. O valor desta propriedade é o caminho absoluto para a pasta onde o Lucene irá criar os índices para as buscas. Você deve criar a pasta (dar as permissões para escrita na pasta) e informar na propriedade o caminho completo para ela, no meu arquivo a propriedade ficou assim:</p>
+
+<pre><code>/home/maycon/lucene/indexes
+</code></pre>
+
+<p>Seguindo todos estes passos e com o banco de dados tal qual o deste exemplo, basta executar a aplicação e você terá criado um pequeno aplicativo web com Struts sem muito sofrimento e com pouca configuração.</p>
+
+<h2>Alguns Ajustes</h2>
+
+<p>Para aparar um pouco as arestas deste exemplo vou sugerir algumas modificações no código, especificamente na parte visual. A primeira diz respeito ao campo autocomplete que é criado no formulário de Produto e referencia Marca. Abra o arquivo form.jsp na pasta web/WEB-INF/produto/ e na tag troque o valor do atributo listValue de id para nome. Se você adicionou alguma marca poderá ver a lista de marcas, e a medida que for digitando as marcas irão sendo filtradas.</p>
+
+<p>Talvez vocês tenham notado que na listagem de produtos, na coluna marca, ao invés de imprimir o nome da Marca está imprimindo algo como: com.app.web.model.entity.Marca@&#8230; Para resolver isto basta abrir a entidade Marca e sobreescrever o método toString, assim:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Override</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">nome</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A segunda modificação é apenas para dar um exemplo de como se criam links para actions. Vou colocar os links na página inicial. Para fazer isso abra o arquivo redirect.jsp na pasta web/WEB-INF/. Substitua o conteúdo do arquivo por isto:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="err">&lt;</span>%@taglib uri=&quot;/struts-tags&quot; prefix=&quot;s&quot;%&gt;
+</span><span class='line'><span class="nt">&lt;h1&gt;</span>Hello World<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- generator:index --&gt;</span>
+</span><span class='line'><span class="nt">&lt;s:url</span> <span class="na">id=</span><span class="s">&quot;marcaIndex&quot;</span> <span class="na">action=</span><span class="s">&quot;index&quot;</span> <span class="na">namespace=</span><span class="s">&quot;/marca&quot;</span><span class="nt">&gt;&lt;/s:url&gt;</span>
+</span><span class='line'><span class="nt">&lt;s:a</span> <span class="na">href=</span><span class="s">&quot;%{marcaIndex}&quot;</span><span class="nt">&gt;</span>Marca Index<span class="nt">&lt;/s:a&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;s:url</span> <span class="na">id=</span><span class="s">&quot;produtoIndex&quot;</span> <span class="na">action=</span><span class="s">&quot;index&quot;</span> <span class="na">namespace=</span><span class="s">&quot;/produto&quot;</span><span class="nt">&gt;&lt;/s:url&gt;</span>
+</span><span class='line'><span class="nt">&lt;s:a</span> <span class="na">href=</span><span class="s">&quot;%{produtoIndex}&quot;</span><span class="nt">&gt;</span>Produto Index<span class="nt">&lt;/s:a&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Acho que não há necessidade de maiores explicações sobre o código acima, para maiores detalhes existe a documentação do Struts 2, mais especificamente a referência das tags dele. Ainda sobre o arquivo redirect.jsp, se você precisar exibir como página inicial uma action, usê-o da seguinte forma:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="err">&lt;</span>%
+</span><span class='line'>  response.sendRedirect(&quot;login/index.action&quot;);
+</span><span class='line'>%&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Assim você estará redirecionando o usuário para, neste exemplo, a action index do controlador de login.</p>
+
+<h3>Lucene Search</h3>
+
+<p>O Lucene é uma engine de busca para textos muito poderosa, escrita em Java. Como foi colocado ateriormente, é preciso informar uma pasta onde o Lucene irá criar os índices para as buscas. Estes índices são criados automaticamente quando dados são inseridos, modificados ou removidos. Entretanto, caso você já possua dados no seu banco, terá de executar um comando uma vez na aplicação para criar o índice inicial. Para fazer isso com a tabela de marcas, por exemplo, você precisaria executar o seguinte código:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">new</span> <span class="nf">MarcaRepositoryHibernate</span><span class="o">().</span><span class="na">createInitialLuceneIndex</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pronto, índice criado, já é possível remover o código da aplicação. Espero futuramente inserir esta funcionalidade no StrutsTool.</p>
+
+<h2>Para finalizar</h2>
+
+<p>Acredito que até o fim deste semestre estarei empenhado no desenvolvimento desta ferramenta, adicionando novas funcionalidades (testes unitários com JUnit e JMock, por exemplo) e, é claro, corrigindo eventuais (provavéis) bugs. Não sei se esta ferramenta terá grande utilidade para outras pessoas, estou desenvolvendo ela de acordo com minhas necessidades.</p>
+
+<p>Espero que a ferramenta tenha alguma utilidade para quem esteja lendo isto. E para quem vai utilizá-la no desenvolvimento de aplicações recomendo logo abaixo alguns sites de referência para consulta, até porque a existência de um gerador não significa que você não deva saber como as coisas funcionam por baixo.</p>
+
+<h2>Links Recomendados</h2>
+
+<ul>
+<li><a href="http://www.mkyong.com/">http://www.mkyong.com/</a> – o mais completo site de tutoriais para Spring, Hibernate, Struts, …</li>
+<li><a href="http://vaannila.com/">http://vaannila.com/</a> – outro site com muitos bons tutoriais para Struts, Tiles, Validator e Hibernate</li>
+<li><a href="http://www.weinfreund.de/struts2-jquery-showcase/index.action">http://www.weinfreund.de/struts2-jquery-showcase/index.action</a> – vários exemplos de como utilizar o plugin jQuery para Struts</li>
+<li><a href="http://www.hibernate.org/docs">http://www.hibernate.org/docs</a></li>
+<li><a href="http://www.hibernate.org/subprojects/search/docs">http://www.hibernate.org/subprojects/search/docs</a></li>
+<li><a href="http://www.hibernate.org/subprojects/validator/docs">http://www.hibernate.org/subprojects/validator/docs</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Maycon Bordin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-05-04T17:21:00-03:00" pubdate data-updated="true">May 4<span>th</span>, 2011</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mayconbordin.github.com/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/" data-via="" data-counturl="http://mayconbordin.github.com/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/" title="Previous Post: Melhorando a segurança dos Cookies">&laquo; Melhorando a segurança dos Cookies</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/06/03/contornando-o-cache-do-hibernate/" title="Next Post: Contornando o Cache do Hibernate">Contornando o Cache do Hibernate &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/">geo.js: Geolocation and Geocoding (pure) JavaScript library</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/">Obter a hora certa via Internet com Java</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/03/contornando-o-cache-do-hibernate/">Contornando o Cache do Hibernate</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/">StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/">Melhorando a segurança dos Cookies</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Maycon Bordin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

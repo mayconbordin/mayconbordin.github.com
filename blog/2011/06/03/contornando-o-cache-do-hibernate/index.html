@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Contornando o Cache do Hibernate - My Octopress Blog</title>
+  <meta name="author" content="Maycon Bordin">
+
+  
+  <meta name="description" content="Dica rápida: quando você carrega um objeto utilizando Hibernate, modifica o mesmo e salva (utilizando update(), merge() ou saveOrUpdate()) e em outra &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mayconbordin.github.com/blog/2011/06/03/contornando-o-cache-do-hibernate/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:mayconbordin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Contornando O Cache Do Hibernate</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-03T14:28:00-03:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Dica rápida: quando você carrega um objeto utilizando Hibernate, modifica o mesmo e salva (utilizando <code>update()</code>, <code>merge()</code> ou <code>saveOrUpdate()</code>) e em outra funcionalidade de seu aplicativo obtém novamente o mesmo objeto através do Hibernate é comum que seja retornado o objeto em cache, com os valores desatualizados. Admito ter demorado mais de uma hora para encontrar uma alternativa que não fosse desabilitar o cache. Para a minha alegria, isso funcionou:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Objeto</span> <span class="n">obj</span> <span class="o">=</span> <span class="o">(</span><span class="n">Objeto</span><span class="o">)</span> <span class="n">session</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Objeto</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">id</span><span class="o">);</span>
+</span><span class='line'><span class="n">session</span><span class="o">.</span><span class="na">refresh</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Quando o método <code>refresh()</code> é chamado, ocorre a releitura do objeto no banco de dados, trazendo o último estado do objeto, ignorando o objeto em cache (ou atualizando, desconheço o funcionamento em detalhes). Testei os métodos <code>flush()</code> (semelhante ao <code>commit()</code>) e <code>clear()</code>, mas nenhum deles conseguiu resgatar o último estado do objeto. Ou é desconhecimento de minha parte, ou o Hibernate não atualiza o cache depois de realizada uma alteração em algum objeto da sessão. Se existe alguma forma de avisar o Hibernate sobre a alteração para que ele atualize o objeto em cache, desconheço.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Maycon Bordin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-06-03T14:28:00-03:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>Java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mayconbordin.github.com/blog/2011/06/03/contornando-o-cache-do-hibernate/" data-via="" data-counturl="http://mayconbordin.github.com/blog/2011/06/03/contornando-o-cache-do-hibernate/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/" title="Previous Post: StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento">&laquo; StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/" title="Next Post: Obter a hora certa via Internet com Java">Obter a hora certa via Internet com Java &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/">geo.js: Geolocation and Geocoding (pure) JavaScript library</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/">Obter a hora certa via Internet com Java</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/03/contornando-o-cache-do-hibernate/">Contornando o Cache do Hibernate</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/">StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/">Melhorando a segurança dos Cookies</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Maycon Bordin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

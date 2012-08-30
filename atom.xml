@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://mayconbordin.github.com/atom.xml" rel="self"/>
   <link href="http://mayconbordin.github.com/"/>
-  <updated>2012-08-30T11:32:31-03:00</updated>
+  <updated>2012-08-30T19:05:33-03:00</updated>
   <id>http://mayconbordin.github.com/</id>
   <author>
     <name><![CDATA[Maycon Bordin]]></name>
@@ -25,6 +25,9 @@
 <p>As I could not find any other library that could fulfill my needs, I built my own. It has support for all the platforms supported by geo-location-javascript, plus geoip services, and it also support custom location providers. In addition, it support geocoding providers, so that when you receive the device&#8217;s location, you can geocode it to obtain its address.</p>
 
 <p>This library has the same interface that of W3C Geolocation API, including the polling functionality. The polling functions are provided by the native device&#8217;s APIs, when enabled, and when the API has no support for it, the library uses his own implementation of watchPosition and clearWatch.</p>
+
+<!-- more -->
+
 
 <h2>Supported platforms</h2>
 
@@ -325,6 +328,737 @@
 <p>Like the location providers, the geocoding providers must be placed before the Geo.init() call.</p>
 
 <p><a href="https://github.com/mayconbordin/geo.js/zipball/master">Download</a> | <a href="https://github.com/mayconbordin/geo.js">Github</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Obter a hora certa via Internet com Java]]></title>
+    <link href="http://mayconbordin.github.com/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/"/>
+    <updated>2011-06-23T18:06:00-03:00</updated>
+    <id>http://mayconbordin.github.com/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java</id>
+    <content type="html"><![CDATA[<p>Se você precisa obter a hora atual com confiabilidade, é possível fazer isso através do protocolo NTP (Network Time Protocol). No mundo todo a hora certa é padronizada através do UTC (Coordinated Universal Time), no Brasil a definição da hora fica a cargo o Observatório Nacional, e através de um acordo entre este e o NIC.br a hora certa no Brasil é distribuída gratuitamente via Internet através do projeto NTP.br. Este projeto disponibiliza vários servidores NTP para a consulta da hora certa no Brasil.</p>
+
+<p>Aqui irei mostrar um código muito simples em Java para a consulta da hora certa utilizando um dos servidores do NTP.br. Para utilizar o protocolo NTP vou fazer uso da biblioteca Apache Commons Net, <a href="https://commons.apache.org/net/download_net.cgi">disponível aqui</a>.</p>
+
+<p>A lista de servidores do NTP.br pode ser obtida <a href="http://ntp.br/">neste link</a>. No exemplo abaixo eu estou usando apenas um dos servidores, mas dependendo da necessidade de cada um seria interessante verificar se o servidor está funcionando, e em caso negativo buscar a hora em outros servidores, de preferência servidores diferentes dos do NTP.br. Você pode encontrar servidores NTP <a href="http://tf.nist.gov/tf-cgi/servers.cgi">aqui</a> e <a href="http://www.pool.ntp.org/en/">aqui</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">ntpServer</span> <span class="o">=</span> <span class="s">&quot;a.st1.ntp.br&quot;</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">NTPUDPClient</span> <span class="n">timeClient</span> <span class="o">=</span> <span class="k">new</span> <span class="n">NTPUDPClient</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">InetAddress</span> <span class="n">inetAddress</span> <span class="o">=</span> <span class="n">InetAddress</span><span class="o">.</span><span class="na">getByName</span><span class="o">(</span><span class="n">ntpServer</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">TimeInfo</span> <span class="n">timeInfo</span> <span class="o">=</span> <span class="n">timeClient</span><span class="o">.</span><span class="na">getTime</span><span class="o">(</span><span class="n">inetAddress</span><span class="o">);</span>
+</span><span class='line'>    <span class="kt">long</span> <span class="n">returnTime</span> <span class="o">=</span> <span class="n">timeInfo</span><span class="o">.</span><span class="na">getReturnTime</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">Date</span> <span class="n">time</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Date</span><span class="o">(</span><span class="n">returnTime</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Hora para &quot;</span> <span class="o">+</span> <span class="n">ntpServer</span> <span class="o">+</span> <span class="s">&quot;: &quot;</span> <span class="o">+</span> <span class="n">time</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">UnknownHostException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>   <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Como eu disse antes, você pode modificar o código para procurar a hora em vários servidores. É bom tratar estas exceptions também, chamei apenas o print por ser um exemplo simples. Considero muito útil buscar a hora em um servidor confiável principalmente quando da necessidade de se obter a hora correta, algo que pode não ser obtido quando a fonte é a máquina local. Isso é interessante quando pensamos em aplicações Java desktop rodando nas máquinas de clientes.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Contornando o Cache do Hibernate]]></title>
+    <link href="http://mayconbordin.github.com/blog/2011/06/03/contornando-o-cache-do-hibernate/"/>
+    <updated>2011-06-03T14:28:00-03:00</updated>
+    <id>http://mayconbordin.github.com/blog/2011/06/03/contornando-o-cache-do-hibernate</id>
+    <content type="html"><![CDATA[<p>Dica rápida: quando você carrega um objeto utilizando Hibernate, modifica o mesmo e salva (utilizando <code>update()</code>, <code>merge()</code> ou <code>saveOrUpdate()</code>) e em outra funcionalidade de seu aplicativo obtém novamente o mesmo objeto através do Hibernate é comum que seja retornado o objeto em cache, com os valores desatualizados. Admito ter demorado mais de uma hora para encontrar uma alternativa que não fosse desabilitar o cache. Para a minha alegria, isso funcionou:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Objeto</span> <span class="n">obj</span> <span class="o">=</span> <span class="o">(</span><span class="n">Objeto</span><span class="o">)</span> <span class="n">session</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">Objeto</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">id</span><span class="o">);</span>
+</span><span class='line'><span class="n">session</span><span class="o">.</span><span class="na">refresh</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Quando o método <code>refresh()</code> é chamado, ocorre a releitura do objeto no banco de dados, trazendo o último estado do objeto, ignorando o objeto em cache (ou atualizando, desconheço o funcionamento em detalhes). Testei os métodos <code>flush()</code> (semelhante ao <code>commit()</code>) e <code>clear()</code>, mas nenhum deles conseguiu resgatar o último estado do objeto. Ou é desconhecimento de minha parte, ou o Hibernate não atualiza o cache depois de realizada uma alteração em algum objeto da sessão. Se existe alguma forma de avisar o Hibernate sobre a alteração para que ele atualize o objeto em cache, desconheço.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento]]></title>
+    <link href="http://mayconbordin.github.com/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/"/>
+    <updated>2011-05-04T17:21:00-03:00</updated>
+    <id>http://mayconbordin.github.com/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento</id>
+    <content type="html"><![CDATA[<p>Um dos aspectos que mais chama a atenção no desenvolvimento de aplicações com Struts é a quantidade de passos necessários para criar aplicações relativamente simples. Quem já usou sabe como é custoso criar um simples CRUD.</p>
+
+<p>Isso trás grande frustração para quem desenvolve aplicações web, inclusive eu. Isso se dá principalmente pois o Struts necessita de extensa configuração. Cada action que você cria precisa ser mapeada em um arquivo xml, se você usar Tiles o negócio é pior ainda, é xml para todo lado.</p>
+
+<p>O pior é que isso acontece em outras frameworks Java, como o Spring. Porém esta adotou o uso de anotações ao invés de xml, mas não deixa de ser configuração. Fato é que com as anotações você não precisa criar tantos arquivos, mas ainda assim precisa escrever muitas linhas para fazer a coisa funcionar.</p>
+
+<p>Com uma rápida busca na internet é possível encontrar diversas discussões sobre quando utilizar Java para web ou qual é a melhor dentre as frameworks para Java (a Wikipedia <a href="http://en.wikipedia.org/wiki/Comparison_of_web_application_frameworks#Java">lista</a> 35 frameworks para Java). Kelby Zorgdrager faz em um artigo uma <a href="http://olex.openlogic.com/wazi/2010/choosing-the-right-java-web-development-framework/">comparação entre frameworks Java</a>, com tabelas de pontuação para os pontos mais relevantes de uma framework. Para encurtar a história, de modo geral (não conclusivo) Struts e JSF tem as melhores notas. Entretanto, frameworks como Stripes e Tapestry tem melhores notas quando falamos em RAD, isso porque ambas se utilizam de convenção ao invés de configuração.</p>
+
+<p>Nessas horas muitos diriam para trocar de linguagem, mas isso depende muito das necessidades e recursos disponíveis para o projeto. Não vou entrar nesta discussão, a internet já está cheia delas, tendo destaque as com títulos como: “linguagem A vs linguagem B”.</p>
+
+<!-- more -->
+
+
+<h2>Porque Struts?</h2>
+
+<p>Não vou dizer que adoro esta framework, pois estaria mentindo. Digamos que a escolha desta framework foi mais uma questão de necessidade (obrigação), do contrário teria escolhido outra framework, ou outra linguagem, como Ruby (<a href="http://gaurav-asktome.blogspot.com/2011/03/java-vs-ruby-on-rails-it-is-dead-heat.html">comparação interessante entre as linguagens</a>).</p>
+
+<p>Bom, se eu tenho que utilizar Struts para desenvolver uma aplicação, ao menos posso usar meus meios para reduzir o sofrimento durante a jornada. E é exatamente o que estou fazendo, construindo uma aplicação de linha de comando inspirada em Rails para Struts 2.</p>
+
+<h2>StrutsTool</h2>
+
+<p>Pois bem, esta aplicação se chama StrutsTool (não estava muito inspirado, então me baseei no Zend_Tool mesmo) e está hospedada no <a href="http://code.google.com/p/strutstool/">Google Code</a>.</p>
+
+<p>A idéia de fazer tal ferramenta surgiu, obviamente, de uma necessidade, que era não me arrebentar para programar funcionalidades simples. E por simples, me refiro ao CRUD. Além disso, muitos arquivos precisam ser criados e modificados para se obter uma aplicação funcional em Struts.</p>
+
+<p>Quer uma amostra prática disto? Justin Gehtland <a href="http://www.theserverside.com/news/thread.tss?thread_id=33120">reescreveu uma aplicação Java em Ruby on Rails</a> e obteve os seguintes resultados:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Linhas de Código:
+</span><span class='line'>Rails: 1164
+</span><span class='line'>Java: 3293
+</span><span class='line'>
+</span><span class='line'>Número de Classes:
+</span><span class='line'>Rails: 55
+</span><span class='line'>Java: 62
+</span><span class='line'>
+</span><span class='line'>Número de Métodos:
+</span><span class='line'>Rails: 126
+</span><span class='line'>Java: 549
+</span><span class='line'>
+</span><span class='line'>Linhas de Configuração:
+</span><span class='line'>Rails: 113
+</span><span class='line'>Java: 1161</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Não é para menos. Quer outro exemplo, então dê uma olhada <a href="https://github.com/mayconbordin/JavaWebExample">neste projeto</a> que hospedei há algum tempo no Github, é apenas um exemplo simples de CRUD utilizando Struts 2, Tiles, Hibernate e Hibernate Validator. Em poucas palavras : muito código para pouca funcionalidade.</p>
+
+<p>Para deixar claro o quanto de trabalho um CRUD pode dar, você precisa:</p>
+
+<ul>
+<li>criar os arquivos .jsp</li>
+<li>criar um controlador</li>
+<li>mapeá-lo no arquivo struts.xml indicando os arquivos .jsp que irão ser exibidos</li>
+<li>se usar tiles, definir os arquivos .jsp no tiles.xml e referenciá-los no struts.xml</li>
+<li>criar a classe POJO</li>
+<li>adicionar validadores de dados ao POJO</li>
+<li>mapear a classe POJO para o Hibernate, podendo ser com anotações ou xml</li>
+<li>criar classe de acesso a dados</li>
+<li>criar classe de serviço</li>
+<li>você pode ainda querer criar um arquivo properties para armazenar as mensagens que serão usadas pelo controlador</li>
+</ul>
+
+
+<p>Foi baseado nesta aplicação de exemplo que eu comecei a criar o que viria a ser uma aplicação de base para o desenvolvimento de minhas aplicações em Struts. Se trata de um projeto com as configurações básicas para funcionar e em cima dele eu poderia adicionar as funcionalidades específicas de minhas aplicações.</p>
+
+<p>De forma simples, esta aplicação (StrutsTool) cria um projeto base e conforme você for criando novas funcionalidades (models, controladores, views, …) a ferramenta irá adicioná-las a este projeto e executar toda a configuração necessária. Ou seja, é um gerador para Struts.</p>
+
+<h2>Funcionalidades</h2>
+
+<p>Esta ferramenta provê, por enquanto, poucas funcionalidades, porém extremamente úteis. Mas antes de falar destas funcionalidades gostaria de listar as frameworks/APIs suportadas pelos projetos criados com esta ferramenta. São elas:</p>
+
+<ul>
+<li>Struts 2.2.1.1</li>
+<li>Struts2 jQuery Plugin 2.5.3</li>
+<li>Hibernate 3.6.3</li>
+<li>Hibernate Validator 4.1.0</li>
+<li>Hibernate Search 3.4.0</li>
+<li>Tiles 2.2.2</li>
+<li>HTML Compressor 1.1</li>
+<li>Closure Compiler</li>
+<li>wro4j 1.3.6</li>
+<li>YUICompressor 2.4.2</li>
+<li>Spring Framework 3.1.0</li>
+<li>displaytag 1.2</li>
+</ul>
+
+
+<p>Agora sim vamos as funcionalidades, basicamente elas são quatro: criação de projeto, scaffolding, criação de controlador e criação de modelo. Nos próximos itens estarei fazendo uma descrição mais detalhada de cada uma destas funções.</p>
+
+<h3>Criação de Projeto</h3>
+
+<p>A criação de um projeto consiste apenas em descomprimir o arquivo que contém o projeto de base para aplicações. Neste projeto não existem controladores, views ou modelos. Apenas a estrutura básica de um projeto para a IDE NetBeans, além de uma série de classes utilizadas como base para a geração de aplicações e alguns arquivos de configuração para as frameworks/APIs.</p>
+
+<h3>Scaffolding</h3>
+
+<p>Talvez uma das funcionalidades mais interessantes da ferramenta, apesar de ser pouco flexível. Assim como em Rails, é necessário apenas informar o nome da classe e os seus atributos e tipos correspondentes. Adicionalmente, a ferramenta permite adicionar o tamanho das variáveis e em caso de relacionamentos com outras classes, indicá-los.</p>
+
+<h3>Criação de Controlador e Criação de Modelo</h3>
+
+<p>A criação de controlador e model é o que o nome diz, não existe mistério. Exceto que a criação de controladores com suas actions inclui a criação das views. Em uma versão futura adicionarei a opção de não criar uma view, o que algumas vezes pode ser conveniente. Quanto a criação de modelo, ele gera a entidade com validações, mapeamento, classe de acesso a dados e de serviços.</p>
+
+<h2>Instalação do StrutsTool</h2>
+
+<p>O StrutsTool foi desenvolvido em Java, para fazer o download dele basta ir na <a href="http://code.google.com/p/strutstool/downloads/list">seção de downloads</a> do projeto e fazer o download dos arquivos StrutsTool-x.x.tar.gz (baixe sempre a última versão) e o arquivolib.zip.</p>
+
+<p>Descompacte o primeiro arquivo na pasta que achar mais conveniente. Dentro desta pasta haverá outra pasta chamada resources, coloque o arquivo lib.zip dentro dela. Para executar a ferramenta utilize o arquivostrutstool (Linux) ou strutstool.bat (Windows). Antes de executá-lo, abra-o e edite as variáveis nele declaradas, sendo elas: INSTALL_PATH (caminho da instalação do StrutsTool) e JAVA_BIN (caminho da pasta bin do Java (JRE ou JDK) ).</p>
+
+<p>Para executar o comando sem precisar estar na pasta da ferramenta você precisa, no Linux, editar o arquivo .bashrc e adicionar as seguintes linhas:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:/caminho/completo/para/strutstool
+</span><span class='line'><span class="nb">export </span>PATH
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>No windows basta adicionar o caminho para o StrutsTool na variável de ambiente path.</p>
+
+<h2>Criando um Aplicativo</h2>
+
+<p>Feita a instalação, é hora de começar a utilizar a ferramenta para criar um aplicativo de exemplo, para demonstrar o que a ferramenta é capaz de fazer. Nosso aplicativo vai ser algo simples, com duas tabelas, uma de produtos e outra de marcas.</p>
+
+<p>Neste exemplo estarei utilizando o banco de dados PostgreSQL, mas qualquer outro banco suportado pelo Hibernate irá funcionar (contanto que sejam feitas as modificações no mapeamento, se necessário). O SQL para criar as tabelas é este:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">produto</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">id</span> <span class="nb">Serial</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">nome</span> <span class="nb">Character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">marca</span> <span class="nb">Integer</span> <span class="k">NOT</span> <span class="k">NULL</span>
+</span><span class='line'><span class="p">)</span> <span class="k">WITH</span> <span class="p">(</span><span class="k">OIDS</span><span class="o">=</span><span class="k">FALSE</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">produto</span> <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">pk_produto</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">marca</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">id</span> <span class="nb">Serial</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">nome</span> <span class="nb">Character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span>
+</span><span class='line'><span class="p">)</span> <span class="k">WITH</span> <span class="p">(</span><span class="k">OIDS</span><span class="o">=</span><span class="k">FALSE</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">marca</span> <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">pk_marca</span> <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">id</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">produto</span> <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">fk_marca_produto</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">marca</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">marca</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span> <span class="k">ON</span> <span class="k">DELETE</span> <span class="k">NO</span> <span class="n">ACTION</span> <span class="k">ON</span> <span class="k">UPDATE</span> <span class="k">NO</span> <span class="n">ACTION</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Criado o banco de dados, iremos agora criar um novo projeto com o StrutsTool. O comando para realizar esta operação é simples:</p>
+
+<pre><code>strutstool new project loja com.app.web
+</code></pre>
+
+<p>Este comando cria o projeto base dentro da pasta loja/. Agora vamos criar o que realmente interessa nesta aplicação através do scaffolding. Primeiro vamos criar os providers (view, modelo e controlador) para a classe Produto, assim:</p>
+
+<pre><code>strutstool scaffold Produto nome:string:100 marca:Marca
+</code></pre>
+
+<p>Após executar o comando deverá aparecer na tela todos os arquivos e pastas criados e/ou modificados. Vale ressaltar que o método scaffold parte da premissa de que o identificador da tabela é chamado id, sendo este um valor inteiro e auto-incremento (ou que use uma sequence, como neste caso (consulte a documentação do Hibernate)).</p>
+
+<p>Outro aspecto importante é o das convenções adotadas pela ferramenta. No caso do Produto, é assumido (por padrão, você pode alterar) que o nome da tabela é produto e ela tem, além da chave primária id, um campo chamado nome de tamanho 100. Além disso, é criado um controlador chamado ProdutoControllercom as actions: index, edit, add e delete.</p>
+
+<p>E nas views (pasta web/WEB-INF/) é criada a pasta produto com as páginas: index.jsp, edit.jsp e add.jsp (delete utiliza jQuery). A url para acesso a action index, por exemplo, ficaria assim:http://localhost:8084/loja/produto/index.action.</p>
+
+<p>Estas são convenções básicas adotadas em várias frameworks conhecidas, exceto o Struts (além de outros frameworks Java), mas que através desta ferramenta poupam o desenvolvedor de configurar mais do que o necessário.</p>
+
+<p>Agora vamos gerar os providers da classe Marca. Para tanto:</p>
+
+<pre><code>strutstool scaffold Marca nome:string:100 produtos:set:Produto
+</code></pre>
+
+<p>Aqui adicionamos mais um atributo a classe, produtos:set:Produto, que corresponde ao relacionamento um para muitos (one-to-many) com a classe de Produto (uma marca tem vários produtos). O set do atributo corresponde ao tipo de Collection do Java java.util.Set. Este é o único tipo de coleção suportado pela ferramenta (não consegui fazer List funcionar com o Hibernate).</p>
+
+<p>Por padrão, a ferramenta gera relacionamentos em duas direções, portanto a classe Produto poderá acessar a marca a qual pertence, bem como uma marca poderá acessar todos os seus produtos. Para quem notou, a ferramenta não checa os tipos de dados utilizados nos parâmetros. A bem da verdade, ela possui uma lista com os tipos básicos suportados e quando um tipo é desconhecido ela trata-o como um novo tipo, portanto cuidado ao informar os tipos de dados.</p>
+
+<p>Outra funcionalidade que preferi desativar era a checagem das classes existentes. Neste exemplo a classe Produto referencia a classe Marca, sendo que esta última nem sequer existe ainda. Porém, me pareceu mais prático deixar a cargo do programador cuidar destes detalhes.</p>
+
+<p>Por equanto esta ferramenta suporta apenas relacionamentos um para muitos (1:n) e muitos para um (n:1). Relacionamentos muitos para muitos (n:m) podem ser feitos com dois relacionamentos um para muitos.</p>
+
+<p>Agora que a aplicação foi gerada, é hora de abrí-la com o NetBeans e fazer algumas modificações. Basta ir em “Abrir Projeto&#8230;” e selecionar a pasta loja. É provável que o NetBeans exiba um erro sobre o arquivo build-impl.xml, isto ocorre devido a uma modificação que é feita durante a criação do projeto. Basta clicar em Regenerar e prosseguir normalmente.</p>
+
+<p>Com o projeto aberto precisamos fazer algumas coisas. Primeiro, adicionar o driver do banco de dados utilizado às bibliotecas do projeto. Depois disso, é preciso abrir o arquivo hibernate.cfg.xml e modificar as configurações do banco de dados com o qual o Hibernate irá se comunicar.</p>
+
+<p>Ainda no arquivo de configurações do Hibernate, é preciso modificar o valor da propriedade com nome hibernate.search.default.indexBase. O valor desta propriedade é o caminho absoluto para a pasta onde o Lucene irá criar os índices para as buscas. Você deve criar a pasta (dar as permissões para escrita na pasta) e informar na propriedade o caminho completo para ela, no meu arquivo a propriedade ficou assim:</p>
+
+<pre><code>/home/maycon/lucene/indexes
+</code></pre>
+
+<p>Seguindo todos estes passos e com o banco de dados tal qual o deste exemplo, basta executar a aplicação e você terá criado um pequeno aplicativo web com Struts sem muito sofrimento e com pouca configuração.</p>
+
+<h2>Alguns Ajustes</h2>
+
+<p>Para aparar um pouco as arestas deste exemplo vou sugerir algumas modificações no código, especificamente na parte visual. A primeira diz respeito ao campo autocomplete que é criado no formulário de Produto e referencia Marca. Abra o arquivo form.jsp na pasta web/WEB-INF/produto/ e na tag troque o valor do atributo listValue de id para nome. Se você adicionou alguma marca poderá ver a lista de marcas, e a medida que for digitando as marcas irão sendo filtradas.</p>
+
+<p>Talvez vocês tenham notado que na listagem de produtos, na coluna marca, ao invés de imprimir o nome da Marca está imprimindo algo como: com.app.web.model.entity.Marca@&#8230; Para resolver isto basta abrir a entidade Marca e sobreescrever o método toString, assim:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Override</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">nome</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A segunda modificação é apenas para dar um exemplo de como se criam links para actions. Vou colocar os links na página inicial. Para fazer isso abra o arquivo redirect.jsp na pasta web/WEB-INF/. Substitua o conteúdo do arquivo por isto:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="err">&lt;</span>%@taglib uri=&quot;/struts-tags&quot; prefix=&quot;s&quot;%&gt;
+</span><span class='line'><span class="nt">&lt;h1&gt;</span>Hello World<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">&lt;!-- generator:index --&gt;</span>
+</span><span class='line'><span class="nt">&lt;s:url</span> <span class="na">id=</span><span class="s">&quot;marcaIndex&quot;</span> <span class="na">action=</span><span class="s">&quot;index&quot;</span> <span class="na">namespace=</span><span class="s">&quot;/marca&quot;</span><span class="nt">&gt;&lt;/s:url&gt;</span>
+</span><span class='line'><span class="nt">&lt;s:a</span> <span class="na">href=</span><span class="s">&quot;%{marcaIndex}&quot;</span><span class="nt">&gt;</span>Marca Index<span class="nt">&lt;/s:a&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;s:url</span> <span class="na">id=</span><span class="s">&quot;produtoIndex&quot;</span> <span class="na">action=</span><span class="s">&quot;index&quot;</span> <span class="na">namespace=</span><span class="s">&quot;/produto&quot;</span><span class="nt">&gt;&lt;/s:url&gt;</span>
+</span><span class='line'><span class="nt">&lt;s:a</span> <span class="na">href=</span><span class="s">&quot;%{produtoIndex}&quot;</span><span class="nt">&gt;</span>Produto Index<span class="nt">&lt;/s:a&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Acho que não há necessidade de maiores explicações sobre o código acima, para maiores detalhes existe a documentação do Struts 2, mais especificamente a referência das tags dele. Ainda sobre o arquivo redirect.jsp, se você precisar exibir como página inicial uma action, usê-o da seguinte forma:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="err">&lt;</span>%
+</span><span class='line'>  response.sendRedirect(&quot;login/index.action&quot;);
+</span><span class='line'>%&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Assim você estará redirecionando o usuário para, neste exemplo, a action index do controlador de login.</p>
+
+<h3>Lucene Search</h3>
+
+<p>O Lucene é uma engine de busca para textos muito poderosa, escrita em Java. Como foi colocado ateriormente, é preciso informar uma pasta onde o Lucene irá criar os índices para as buscas. Estes índices são criados automaticamente quando dados são inseridos, modificados ou removidos. Entretanto, caso você já possua dados no seu banco, terá de executar um comando uma vez na aplicação para criar o índice inicial. Para fazer isso com a tabela de marcas, por exemplo, você precisaria executar o seguinte código:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">new</span> <span class="nf">MarcaRepositoryHibernate</span><span class="o">().</span><span class="na">createInitialLuceneIndex</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pronto, índice criado, já é possível remover o código da aplicação. Espero futuramente inserir esta funcionalidade no StrutsTool.</p>
+
+<h2>Para finalizar</h2>
+
+<p>Acredito que até o fim deste semestre estarei empenhado no desenvolvimento desta ferramenta, adicionando novas funcionalidades (testes unitários com JUnit e JMock, por exemplo) e, é claro, corrigindo eventuais (provavéis) bugs. Não sei se esta ferramenta terá grande utilidade para outras pessoas, estou desenvolvendo ela de acordo com minhas necessidades.</p>
+
+<p>Espero que a ferramenta tenha alguma utilidade para quem esteja lendo isto. E para quem vai utilizá-la no desenvolvimento de aplicações recomendo logo abaixo alguns sites de referência para consulta, até porque a existência de um gerador não significa que você não deva saber como as coisas funcionam por baixo.</p>
+
+<h2>Links Recomendados</h2>
+
+<ul>
+<li><a href="http://www.mkyong.com/">http://www.mkyong.com/</a> – o mais completo site de tutoriais para Spring, Hibernate, Struts, …</li>
+<li><a href="http://vaannila.com/">http://vaannila.com/</a> – outro site com muitos bons tutoriais para Struts, Tiles, Validator e Hibernate</li>
+<li><a href="http://www.weinfreund.de/struts2-jquery-showcase/index.action">http://www.weinfreund.de/struts2-jquery-showcase/index.action</a> – vários exemplos de como utilizar o plugin jQuery para Struts</li>
+<li><a href="http://www.hibernate.org/docs">http://www.hibernate.org/docs</a></li>
+<li><a href="http://www.hibernate.org/subprojects/search/docs">http://www.hibernate.org/subprojects/search/docs</a></li>
+<li><a href="http://www.hibernate.org/subprojects/validator/docs">http://www.hibernate.org/subprojects/validator/docs</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Melhorando a segurança dos Cookies]]></title>
+    <link href="http://mayconbordin.github.com/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/"/>
+    <updated>2011-02-17T21:09:00-02:00</updated>
+    <id>http://mayconbordin.github.com/blog/2011/02/17/melhorando-a-seguranca-dos-cookies</id>
+    <content type="html"><![CDATA[<p>Estou desenvolvendo um sistema de administração básico com o Zend Framework para utilizar em meus projetos, também pretendo escrever algo sobre ele aqui, bem como disponibilizá-lo. Enfim, durante o seu desenvolvimento estava planejado a implementação da funcionalidade de lembrar-se do login no sistema.</p>
+
+<p>Esta é uma funcionalidade muito utilizada e é algo muito prático para quem não aprecia digitar a senha dezenas de vezes (talvez por isso acabem as esquecendo). Apesar de ser uma mão na roda para muita gente, essa funcionalidade pode trazer consigo muitas implicações de segurança, estas citadas por Nicholas Zakas em seu blog e que eu vou resumir aqui.</p>
+
+<!-- more -->
+
+
+<ul>
+<li><p>A primeira delas é o armazenamento de informações importantes sobre o usuário em texto plano, isso os torna vulneráveis a ataques de session hijacking, quando as informações do cookie são interceptadas pela rede (packet sniffing) e utilizadas para recriar o cookie.</p></li>
+<li><p>O roubo de cookies também pode ocorrer através de cross-site scripting (XSS). Este método consiste na injeção de código Javascript em uma página através de inclusão de scripts de terceiros que possam conter código malicioso ou através de entradas do usuário não filtradas. Muitos exemplos de XSS podem ser encontrados nesta cheat sheet. E quem não se lembra das falhas do orkut que possibilitavam o roubo de cookies?</p></li>
+<li><p>Além destes dois métodos, um terceiro é o cross-site request forgery (CSRF), neste a pessoa que faz o ataque é capaz de convencer o navegador a enviar uma requisição para um site o qual o usuário está logado. Isso pode ser feito tanto usando técnicas de XSS como HTML simples.</p></li>
+</ul>
+
+
+<h2>Soluções?</h2>
+
+<p>Para evitar roubo de cookies é recomendado enviá-los somente através de conexões seguras (SSL). Como nem todo mundo possui certificado SSL, existem outras alternativas como a criação de uma chave de autenticação com dados do usuário e sempre requisitar a autenticação do usuário em procedimentos de alto nível (como a troca de senha ou email do usuário).</p>
+
+<p>É importante ainda incluir apenas scripts confiáveis em seus sites, além de filtrar todos os dados provenientes dos usuários para evitar a injeção de código malicioso.</p>
+
+<h2>HMAC</h2>
+
+<p>Dentre as soluções dispostas acima, uma delas é a HMAC (Hash-based Message Authentication Code), utilizada para construir um código de autenticação de mensagem (MAC) através de uma função hash e uma chave secreta. Através deste método é possível verificar tanto a integridade como a autenticidade da mensagem.Uma aplicação prática deste método pode ser vista no sistema de autenticação da Amazon SQS.</p>
+
+<h2>Implementação</h2>
+
+<p>Abaixo é possível visualizar o esquema básico de funcionamento da criação e autenticação dos cookies utilizando HMAC.</p>
+
+<p><img src="http://mayconbordin.github.com/assets/images/security-cookies.jpg" title="Autenticação de Cookies com HMAC" alt="Alt text" /></p>
+
+<p>A implementação foi feita em PHP, e somente a parte correspondente a criação do cookie foi desenvolvida, sendo que a autenticação depende da arquitetura do sistema.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Inclui as bibliotecas necessárias</span>
+</span><span class='line'><span class="k">require</span> <span class="p">(</span><span class="s1">&#39;./lib/Browser/Browser.php&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">require</span> <span class="p">(</span><span class="s1">&#39;./lib/Ip.php&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Instancia o objeto para obter os dados do navegador</span>
+</span><span class='line'><span class="nv">$browser</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Browser</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Cria uma hash com a challenge do usuário</span>
+</span><span class='line'><span class="c1">//Poderia ser ainda a senha do usuário. Neste caso a challenge é uma chave criada</span>
+</span><span class='line'><span class="c1">//através do sistema de login CHAP.</span>
+</span><span class='line'><span class="c1">//http://en.wikipedia.org/wiki/Challenge-handshake_authentication_protocol</span>
+</span><span class='line'><span class="nv">$userChallenge</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="s1">&#39;sha256&#39;</span><span class="p">,</span> <span class="s2">&quot;User challenge hash&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Nome do usuário</span>
+</span><span class='line'><span class="nv">$userName</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Gera a chave que será usada para gerar a assinatura do usuário</span>
+</span><span class='line'><span class="nv">$key</span> <span class="o">=</span> <span class="nv">$browser</span><span class="o">-&gt;</span><span class="na">getBrowser</span><span class="p">()</span><span class="o">.</span>
+</span><span class='line'>     <span class="nv">$browser</span><span class="o">-&gt;</span><span class="na">getVersion</span><span class="p">()</span><span class="o">.</span>
+</span><span class='line'>     <span class="nv">$browser</span><span class="o">-&gt;</span><span class="na">getUserAgent</span><span class="p">()</span><span class="o">.</span>
+</span><span class='line'>     <span class="nv">$browser</span><span class="o">-&gt;</span><span class="na">getPlatform</span><span class="p">()</span><span class="o">.</span>
+</span><span class='line'>     <span class="nx">Ip</span><span class="o">::</span><span class="na">getIp</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Transforma a chave em hash</span>
+</span><span class='line'><span class="c1">//Essa chave precisa ser guardada em associação com o usuário para posterior</span>
+</span><span class='line'><span class="c1">//verificação de autenticidade</span>
+</span><span class='line'><span class="nv">$key</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="s1">&#39;sha256&#39;</span><span class="p">,</span> <span class="nv">$key</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Une os dados do usuário</span>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nv">$userChallenge</span> <span class="o">.</span> <span class="nv">$userName</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Cria a assinatura do usuário que servirá para autenticação</span>
+</span><span class='line'><span class="nv">$signature</span> <span class="o">=</span> <span class="nb">hash_hmac</span><span class="p">(</span><span class="s2">&quot;sha256&quot;</span><span class="p">,</span> <span class="nv">$data</span><span class="p">,</span> <span class="nv">$key</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Serializa os dados do cookie</span>
+</span><span class='line'><span class="nv">$cookie</span> <span class="o">=</span> <span class="nb">serialize</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="nv">$userName</span><span class="p">,</span> <span class="nv">$signature</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Codifica o cookie</span>
+</span><span class='line'><span class="nv">$cookie</span> <span class="o">=</span> <span class="nb">base64_encode</span><span class="p">(</span><span class="nv">$cookie</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Armazena o cookie</span>
+</span><span class='line'><span class="nx">setcookie</span><span class="p">(</span><span class="s1">&#39;remember_me&#39;</span><span class="p">,</span> <span class="nv">$cookie</span><span class="p">,</span> <span class="nb">time</span><span class="p">()</span><span class="o">+</span><span class="mi">3600</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//=============================================</span>
+</span><span class='line'><span class="c1">//Impressão dos dados</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">&lt;table border=&quot;1&quot;&gt;</span>
+</span><span class='line'><span class="x">  &lt;tr&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;Mensagem:&lt;/td&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$data</span> <span class="cp">?&gt;</span><span class="x">&lt;/td&gt;</span>
+</span><span class='line'><span class="x">  &lt;/tr&gt;</span>
+</span><span class='line'><span class="x">  &lt;tr&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;Chave:&lt;/td&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$key</span> <span class="cp">?&gt;</span><span class="x">&lt;/td&gt;</span>
+</span><span class='line'><span class="x">  &lt;/tr&gt;</span>
+</span><span class='line'><span class="x">  &lt;tr&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;Assinatura:&lt;/td&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$signature</span> <span class="cp">?&gt;</span><span class="x">&lt;/td&gt;</span>
+</span><span class='line'><span class="x">  &lt;/tr&gt;</span>
+</span><span class='line'><span class="x">&lt;/table&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Espero que os comentários estejam claros o suficiente para a compreesão do funcionamento do código. Todos os códigos, incluindo a classe Browser, podem ser baixados aqui.</p>
+
+<p>De forma resumida, através desta implementação os cookies serão uma credencial que só será aberta com uma chave, sendo esta uma combinação de informações do computador do usuário. Isso, entretanto, não irá garantir com 100% de certeza que o cookie não poderá ser usado por outra pessoa em outro computador, mas fazer isso será muito mais complicado. A implementação também limita a &#8220;memória&#8221; do sistema de login, já que ele usa o IP do usuário como parte da chave para autenticar a credencial. Ao menos os dados do usuário estarão a salvo, desde que outras precauções citadas neste artigo também sejam tomadas.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[JCalendar no NetBeans]]></title>
+    <link href="http://mayconbordin.github.com/blog/2010/08/24/jcalendar-no-netbeans/"/>
+    <updated>2010-08-24T13:04:00-03:00</updated>
+    <id>http://mayconbordin.github.com/blog/2010/08/24/jcalendar-no-netbeans</id>
+    <content type="html"><![CDATA[<p>Estou usando Java já faz alguns meses, e por estes dias me perguntei se havia algum datepicker disponível, deveria vir por padrão no Swing. Procurei na internet e encontrei várias soluções, algumas das melhores eram pagas, para variar. Foi então que eu encontrei o JCalendar, este me pareceu o mais bem apresentado dentre os free que encontrei.</p>
+
+<p>A última versão data do início de 2009 mas, pensando bem, quantas melhorias mais um datepicker pode precisar? E o que mais me interessou foi a possibilidade de adicionar o JCalendar na paleta de componentes do Swing, até porque ficar codificando o datepicker de uma tela é perda de tempo.</p>
+
+<!-- more -->
+
+
+<p>Em primeiro lugar é preciso baixar o JCalendar, isso pode ser feito <a href="http://www.toedter.com/download/jcalendar-1.4.zip">aqui</a> e, depois de descompactado, o único arquivo necessário será o jcalendar-1.4.jar que está dentro da pasta /lib.</p>
+
+<p>Feito isto, abra o NetBeans e vá em Ferramentas > Paleta > Componentes Swing/AWT. Com isso, deve aparecer o gerenciador de paleta, assim:</p>
+
+<p><img src="http://mayconbordin.github.com/assets/images/jcalendar-1.png" alt="Alt text" /></p>
+
+<p>Com o gerenciador aberto clique em Nova Categoria (aqui New Category) e coloque o nome que preferir para referenciar a pasta onde irão ficar os componentes do JCalendar.</p>
+
+<p><img src="http://mayconbordin.github.com/assets/images/jcalendar-2.png" alt="Alt text" /></p>
+
+<p>Clique em Adicionar do JAR (ou Add from JAR) e selecione o arquivo baixado jcalendar-1.4.jar e clique em Próximo.</p>
+
+<p><img src="http://mayconbordin.github.com/assets/images/jcalendar-3.png" alt="Alt text" /></p>
+
+<p>Vão aparecer todos os componentes disponíveis dentro deste JAR, selecione todos e vá para o Próximo passo.</p>
+
+<p><img src="http://mayconbordin.github.com/assets/images/jcalendar-4.png" alt="Alt text" /></p>
+
+<p>É só escolher a categoria onde quer que estes componentes apareçam na paleta do Swing/AWT e conclui a instalação.</p>
+
+<p><img src="http://mayconbordin.github.com/assets/images/jcalendar-5.png" alt="Alt text" /></p>
+
+<p>O gerenciador da paleta vai aparecer mostrando os componentes adicionados a categoria, é só fechá-lo e ir para um JFrame o JDialog e arrastar os componentes para a tela.</p>
+
+<p><img src="http://mayconbordin.github.com/assets/images/jcalendar-6.png" alt="Alt text" /></p>
+
+<p>O resultado, usando o JDateChooser, deve ficar assim:</p>
+
+<p><img src="http://mayconbordin.github.com/assets/images/jcalendar-7.png" alt="Alt text" /></p>
+
+<p><a href="http://www.toedter.com/en/jcalendar/api/index.html">Documentação (JCalendar API)</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Alguns comandos SQL úteis em Oracle]]></title>
+    <link href="http://mayconbordin.github.com/blog/2010/07/09/alguns-comandos-sql-uteis-em-oracle/"/>
+    <updated>2010-07-09T19:49:00-03:00</updated>
+    <id>http://mayconbordin.github.com/blog/2010/07/09/alguns-comandos-sql-uteis-em-oracle</id>
+    <content type="html"><![CDATA[<p>Em um dos projetos de faculdade que participei foi utilizado o Oracle 10g XE para o desenvolvimento de um sistema de gestão de pessoas. Acostumado com MySQL tive algumas dificuldades em princípio para me adaptar. Abaixo deixo alguns comandos SQL que utilizei bastante.</p>
+
+<!-- more -->
+
+
+<h2>Paginação</h2>
+
+<p>Para quem está acostumado com o LIMIT e o OFFSET do MySQL e PostgreSQL, usar paginação no Oracle se torna chato, isso porque para limitar a quantidade de resultados que se deseja recuperar é preciso fazer uma sub-query. Assim sendo, o SQL ficaria desta forma:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="p">(</span> <span class="k">SELECT</span> <span class="n">codigo</span><span class="p">,</span> <span class="n">nome</span><span class="p">,</span> <span class="n">row_number</span><span class="p">()</span> <span class="n">OVER</span><span class="p">(</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">codigo</span> <span class="p">)</span> <span class="n">rn</span> <span class="k">FROM</span> <span class="n">pessoas</span> <span class="p">)</span> <span class="k">WHERE</span> <span class="n">rn</span> <span class="o">&gt;=</span> <span class="mi">10</span> <span class="k">AND</span> <span class="n">rn</span> <span class="o">&lt;=</span> <span class="mi">20</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">rn</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Neste comando eu estou selecionando o código e o nome das pessoas ordenadas pelo seu código, à partir do registro 10 até o 20.</p>
+
+<h2>Resgatar datas formatadas e inserir datas</h2>
+
+<p>Converter datas não chega a ser algo complicado ou que careça de informações a respeito, de qualquer forma abaixo estão os exemplos para selecionar datas formatadas e para inseri-lás:</p>
+
+<figure class='code'><figcaption><span>Recuperar a data</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="n">campo_data</span><span class="p">,</span> <span class="s1">&#39;DD/MM/YYYY&#39;</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">nome_tabela</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>Recuperar a data e hora</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="n">campo_data</span><span class="p">,</span> <span class="s1">&#39;DD/MM/YYYY HH24:MI:SS&#39;</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">nome_tabela</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Para salvar a data é preciso converter a string da seguinte forma:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">nome_tabela</span> <span class="k">VALUES</span><span class="p">(</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="s1">&#39;05/10/2010 10:20:55&#39;</span><span class="p">,</span> <span class="s1">&#39;DD/MM/YYYY HH24:MI:SS&#39;</span><span class="p">)</span> <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Converter UNIX EPOCH DATE para Date</h2>
+
+<p>O módulo o qual eu estava responsável por desenvolver seria feito todo em PHP, e eu pensando em facilitar minha vida utilizei um sistema de autenticação que eu havia desenvolvido algum tempo atrás usando MySQL. E bom se fosse apenas trocar a connection string e banco utilizado na classe de abstração da aplicação.</p>
+
+<p>Longe disso, meu problema estava no armazenamento das datas em epoch time. Eu precisava visualizar elas em formato de data, mas queria manter no banco de dados apenas o integer(11) para não precisar modificar as classes que faziam cálculos com datas.</p>
+
+<p>Depois de algumas buscas encontrei uma solução:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="n">TO_DATE</span><span class="p">(</span> <span class="s1">&#39;1970-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;YYYY-MM-DD&#39;</span> <span class="p">)</span> <span class="o">+</span> <span class="n">numtodsinterval</span><span class="p">(</span> <span class="n">campo_para_converter</span> <span class="p">,</span> <span class="s1">&#39;SECOND&#39;</span> <span class="p">),</span> <span class="s1">&#39;YYYY-MM-DD&#39;</span> <span class="p">)</span> <span class="k">AS</span> <span class="k">data</span> <span class="k">FROM</span> <span class="n">nome_tabela</span> <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">TO_CHAR</span><span class="p">(</span> <span class="n">TO_DATE</span><span class="p">(</span> <span class="s1">&#39;1970-01-01&#39;</span><span class="p">,</span> <span class="s1">&#39;YYYY-MM-DD&#39;</span> <span class="p">)</span> <span class="o">+</span> <span class="n">numtodsinterval</span><span class="p">(</span> <span class="n">epoch_para_converter</span> <span class="p">,</span> <span class="s1">&#39;SECOND&#39;</span> <span class="p">),</span> <span class="s1">&#39;YYYY-MM-DD&#39;</span> <span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Auto incremento</h2>
+
+<p>Quem começa a usar Oracle sente, no começo, falta do checkbox de auto incremento ou do tipo de dados Serial do PostgreSQL. Este último funciona exatamente como o Oracle, só que de uma forma mais facilitada. No Oracle, é preciso criar uma sequence e depois uma trigger que irá adicionar o valor sequencial ao campo desejado em toda inserção realizada.</p>
+
+<p>Temos a seguinte tabela:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">pessoas</span><span class="p">(</span>
+</span><span class='line'>    <span class="n">codigo</span> <span class="nb">Integer</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">nome</span> <span class="n">Varchar2</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+</span><span class='line'><span class="p">)</span>
+</span><span class='line'><span class="o">/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Agora precisamos criar uma sequence que servirá para a &#8220;criação do campo&#8221; auto-incremento:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="n">SEQUENCE</span> <span class="n">seq_pessoas_codigo</span>
+</span><span class='line'> <span class="n">NOMAXVALUE</span>
+</span><span class='line'> <span class="n">NOMINVALUE</span>
+</span><span class='line'> <span class="n">NOCACHE</span>
+</span><span class='line'><span class="o">/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>No comando acima eu não informei MINVALUE, MAXVALUE, START WITH e INCREMENT BY. Eles servem respectivamente para determinar o valor mínimo da sequência, o valor máximo que ela pode alcançar, por qual valor ela iniciará e de quanto em quanto este valor será incrementado. O cache da sequence serve para armazenar na memória determinada quantidade de valores futuros, o problema é que se ocorrer um problema os valores não utilizados serão perdidos e ocorrerá um gap entre o último valor salvo e o próximo a ser utilizado. Depois de criada a sequence é preciso criar o trigger que vai fazer a inserção do valor sequencial no campo especificado.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TRIGGER</span> <span class="n">ts_pessoas_codigo_seq</span> <span class="k">BEFORE</span> <span class="k">INSERT</span>
+</span><span class='line'><span class="k">ON</span> <span class="n">pessoas</span> <span class="k">FOR</span> <span class="k">EACH</span> <span class="k">ROW</span>
+</span><span class='line'><span class="k">BEGIN</span>
+</span><span class='line'>  <span class="k">SELECT</span> <span class="n">seq_pessoas_codigo</span><span class="p">.</span><span class="n">nextval</span> <span class="k">INTO</span> <span class="p">:</span><span class="k">new</span><span class="p">.</span><span class="n">codigo</span> <span class="k">FROM</span> <span class="n">DUAL</span><span class="p">;</span>
+</span><span class='line'><span class="k">END</span><span class="p">;</span>
+</span><span class='line'><span class="o">/</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">TRIGGER</span> <span class="n">tsu_pessoas_codigo_seq</span> <span class="k">AFTER</span> <span class="k">UPDATE</span> <span class="k">OF</span> <span class="n">codigo</span>
+</span><span class='line'><span class="k">ON</span> <span class="n">pessoas</span> <span class="k">FOR</span> <span class="k">EACH</span> <span class="k">ROW</span>
+</span><span class='line'><span class="k">BEGIN</span>
+</span><span class='line'>  <span class="n">RAISE_APPLICATION_ERROR</span><span class="p">(</span><span class="o">-</span><span class="mi">20010</span><span class="p">,</span><span class="s1">&#39;Não foi possível atualizar a coluna codigo na tabela pessoas pois ela utiliza sequência.&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">END</span><span class="p">;</span>
+</span><span class='line'><span class="o">/</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>No comando acima foram criadas duas triggers. A primeira vai inserir o próximo valor da sequência seq_pessoas_codigo no campo codigo da tabela pessoas antes da inserção de um registro ocorrer. Enquanto que a segunda trigger vai disparar um erro caso alguém tente atualizar  o campo codigo da tabela pessoas.</p>
+
+<p>E  quem precisa resgatar o código inserido pode utilizar o comando abaixo, lembrando que se outros registros forem inseridos ao mesmo tempo corre-se o risco de recuperar o código errado, infelizmente desconheço outra solução.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="n">seq_pessoas_codigo</span><span class="p">.</span><span class="n">currval</span> <span class="k">FROM</span> <span class="n">dual</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>De forma geral, o uso de sequences é bem fácil e na maior parte dos casos funciona muito bem, e pra quem acha chato ficar criando tantos comandos existem ferramentas de modelagem que se encarregam da criação das triggers, a única coisa que precisa ser feita é a vinculação da sequence com o campo desejado. Para quem se interessar, o TOAD Data Modeler faz o trabalho muito bem, pena que não seja gratuito.</p>
+
+<p>Em outros casos o uso de sequences pode ser um problema, principalmente se não pode haver gaps entre os códigos sequenciais. Nestes casos acredito que a melhor forma seja criar uma tabela que armazene os próximos valores e que isso seja controlado através da aplicação.</p>
+
+<p>O Oracle é sem dúvida alguma um dos melhores SGBDs no mercado e vale muito a pena fazer ao menos alguns testes com ele. Apesar dele possuir algumas peculiaridades, de forma alguma isso o torna mais complicado de utilizar. Existe muita documentação e quem quiser testar pode baixar a versão 10g XE que é gratuita para desenvolvimento.</p>
+
+<h2>Links úteis:</h2>
+
+<ul>
+<li><a href="http://www.oracle.com/technology/products/database/xe/index.html">Oracle 10g XE</a></li>
+<li><a href="http://www.oracle.com/technology/documentation/index.html">Documentações Oracle</a></li>
+</ul>
+
 ]]></content>
   </entry>
   

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: PHP | My Octopress Blog]]></title>
+  <link href="http://mayconbordin.github.com/blog/categories/php/atom.xml" rel="self"/>
+  <link href="http://mayconbordin.github.com/"/>
+  <updated>2012-08-30T19:05:33-03:00</updated>
+  <id>http://mayconbordin.github.com/</id>
+  <author>
+    <name><![CDATA[Maycon Bordin]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Melhorando a segurança dos Cookies]]></title>
+    <link href="http://mayconbordin.github.com/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/"/>
+    <updated>2011-02-17T21:09:00-02:00</updated>
+    <id>http://mayconbordin.github.com/blog/2011/02/17/melhorando-a-seguranca-dos-cookies</id>
+    <content type="html"><![CDATA[<p>Estou desenvolvendo um sistema de administração básico com o Zend Framework para utilizar em meus projetos, também pretendo escrever algo sobre ele aqui, bem como disponibilizá-lo. Enfim, durante o seu desenvolvimento estava planejado a implementação da funcionalidade de lembrar-se do login no sistema.</p>
+
+<p>Esta é uma funcionalidade muito utilizada e é algo muito prático para quem não aprecia digitar a senha dezenas de vezes (talvez por isso acabem as esquecendo). Apesar de ser uma mão na roda para muita gente, essa funcionalidade pode trazer consigo muitas implicações de segurança, estas citadas por Nicholas Zakas em seu blog e que eu vou resumir aqui.</p>
+
+<!-- more -->
+
+
+<ul>
+<li><p>A primeira delas é o armazenamento de informações importantes sobre o usuário em texto plano, isso os torna vulneráveis a ataques de session hijacking, quando as informações do cookie são interceptadas pela rede (packet sniffing) e utilizadas para recriar o cookie.</p></li>
+<li><p>O roubo de cookies também pode ocorrer através de cross-site scripting (XSS). Este método consiste na injeção de código Javascript em uma página através de inclusão de scripts de terceiros que possam conter código malicioso ou através de entradas do usuário não filtradas. Muitos exemplos de XSS podem ser encontrados nesta cheat sheet. E quem não se lembra das falhas do orkut que possibilitavam o roubo de cookies?</p></li>
+<li><p>Além destes dois métodos, um terceiro é o cross-site request forgery (CSRF), neste a pessoa que faz o ataque é capaz de convencer o navegador a enviar uma requisição para um site o qual o usuário está logado. Isso pode ser feito tanto usando técnicas de XSS como HTML simples.</p></li>
+</ul>
+
+
+<h2>Soluções?</h2>
+
+<p>Para evitar roubo de cookies é recomendado enviá-los somente através de conexões seguras (SSL). Como nem todo mundo possui certificado SSL, existem outras alternativas como a criação de uma chave de autenticação com dados do usuário e sempre requisitar a autenticação do usuário em procedimentos de alto nível (como a troca de senha ou email do usuário).</p>
+
+<p>É importante ainda incluir apenas scripts confiáveis em seus sites, além de filtrar todos os dados provenientes dos usuários para evitar a injeção de código malicioso.</p>
+
+<h2>HMAC</h2>
+
+<p>Dentre as soluções dispostas acima, uma delas é a HMAC (Hash-based Message Authentication Code), utilizada para construir um código de autenticação de mensagem (MAC) através de uma função hash e uma chave secreta. Através deste método é possível verificar tanto a integridade como a autenticidade da mensagem.Uma aplicação prática deste método pode ser vista no sistema de autenticação da Amazon SQS.</p>
+
+<h2>Implementação</h2>
+
+<p>Abaixo é possível visualizar o esquema básico de funcionamento da criação e autenticação dos cookies utilizando HMAC.</p>
+
+<p><img src="/assets/images/security-cookies.jpg" title="Autenticação de Cookies com HMAC" alt="Alt text" /></p>
+
+<p>A implementação foi feita em PHP, e somente a parte correspondente a criação do cookie foi desenvolvida, sendo que a autenticação depende da arquitetura do sistema.</p>
+
+<p>``` php
+&lt;?php</p>
+
+<p>//Inclui as bibliotecas necessárias
+require ('./lib/Browser/Browser.php');
+require ('./lib/Ip.php');</p>
+
+<p>//Instancia o objeto para obter os dados do navegador
+$browser = new Browser();</p>
+
+<p>//Cria uma hash com a challenge do usuário
+//Poderia ser ainda a senha do usuário. Neste caso a challenge é uma chave criada
+//através do sistema de login CHAP.
+//http://en.wikipedia.org/wiki/Challenge-handshake_authentication_protocol
+$userChallenge = hash('sha256', "User challenge hash");</p>
+
+<p>//Nome do usuário
+$userName = 'admin';</p>
+
+<p>//Gera a chave que será usada para gerar a assinatura do usuário
+$key = $browser->getBrowser().</p>
+
+<pre><code>   $browser-&gt;getVersion().
+   $browser-&gt;getUserAgent().
+   $browser-&gt;getPlatform().
+   Ip::getIp();
+</code></pre>
+
+<p>//Transforma a chave em hash
+//Essa chave precisa ser guardada em associação com o usuário para posterior
+//verificação de autenticidade
+$key = hash('sha256', $key);</p>
+
+<p>//Une os dados do usuário
+$data = $userChallenge . $userName;</p>
+
+<p>//Cria a assinatura do usuário que servirá para autenticação
+$signature = hash_hmac("sha256", $data, $key);</p>
+
+<p>//Serializa os dados do cookie
+$cookie = serialize(array($userName, $signature));</p>
+
+<p>//Codifica o cookie
+$cookie = base64_encode($cookie);</p>
+
+<p>//Armazena o cookie
+setcookie('remember_me', $cookie, time()+3600);</p>
+
+<p>//=============================================
+//Impressão dos dados
+?></p>
+
+<table border="1">
+    <tr>
+        <td>Mensagem:</td>
+        <td><?= $data ?></td>
+    </tr>
+    <tr>
+        <td>Chave:</td>
+        <td><?= $key ?></td>
+    </tr>
+    <tr>
+        <td>Assinatura:</td>
+        <td><?= $signature ?></td>
+    </tr>
+</table>
+
+
+<p>```</p>
+
+<p>Espero que os comentários estejam claros o suficiente para a compreesão do funcionamento do código. Todos os códigos, incluindo a classe Browser, podem ser baixados aqui.</p>
+
+<p>De forma resumida, através desta implementação os cookies serão uma credencial que só será aberta com uma chave, sendo esta uma combinação de informações do computador do usuário. Isso, entretanto, não irá garantir com 100% de certeza que o cookie não poderá ser usado por outra pessoa em outro computador, mas fazer isso será muito mais complicado. A implementação também limita a "memória" do sistema de login, já que ele usa o IP do usuário como parte da chave para autenticar a credencial. Ao menos os dados do usuário estarão a salvo, desde que outras precauções citadas neste artigo também sejam tomadas.</p>
+]]></content>
+  </entry>
+  
+</feed>

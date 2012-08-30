@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Melhorando a segurança dos Cookies - My Octopress Blog</title>
+  <meta name="author" content="Maycon Bordin">
+
+  
+  <meta name="description" content="Estou desenvolvendo um sistema de administração básico com o Zend Framework para utilizar em meus projetos, também pretendo escrever algo sobre ele &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://mayconbordin.github.com/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:mayconbordin.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Melhorando a Segurança Dos Cookies</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-17T21:09:00-02:00" pubdate data-updated="true">Feb 17<span>th</span>, 2011</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Estou desenvolvendo um sistema de administração básico com o Zend Framework para utilizar em meus projetos, também pretendo escrever algo sobre ele aqui, bem como disponibilizá-lo. Enfim, durante o seu desenvolvimento estava planejado a implementação da funcionalidade de lembrar-se do login no sistema.</p>
+
+<p>Esta é uma funcionalidade muito utilizada e é algo muito prático para quem não aprecia digitar a senha dezenas de vezes (talvez por isso acabem as esquecendo). Apesar de ser uma mão na roda para muita gente, essa funcionalidade pode trazer consigo muitas implicações de segurança, estas citadas por Nicholas Zakas em seu blog e que eu vou resumir aqui.</p>
+
+<!-- more -->
+
+
+<ul>
+<li><p>A primeira delas é o armazenamento de informações importantes sobre o usuário em texto plano, isso os torna vulneráveis a ataques de session hijacking, quando as informações do cookie são interceptadas pela rede (packet sniffing) e utilizadas para recriar o cookie.</p></li>
+<li><p>O roubo de cookies também pode ocorrer através de cross-site scripting (XSS). Este método consiste na injeção de código Javascript em uma página através de inclusão de scripts de terceiros que possam conter código malicioso ou através de entradas do usuário não filtradas. Muitos exemplos de XSS podem ser encontrados nesta cheat sheet. E quem não se lembra das falhas do orkut que possibilitavam o roubo de cookies?</p></li>
+<li><p>Além destes dois métodos, um terceiro é o cross-site request forgery (CSRF), neste a pessoa que faz o ataque é capaz de convencer o navegador a enviar uma requisição para um site o qual o usuário está logado. Isso pode ser feito tanto usando técnicas de XSS como HTML simples.</p></li>
+</ul>
+
+
+<h2>Soluções?</h2>
+
+<p>Para evitar roubo de cookies é recomendado enviá-los somente através de conexões seguras (SSL). Como nem todo mundo possui certificado SSL, existem outras alternativas como a criação de uma chave de autenticação com dados do usuário e sempre requisitar a autenticação do usuário em procedimentos de alto nível (como a troca de senha ou email do usuário).</p>
+
+<p>É importante ainda incluir apenas scripts confiáveis em seus sites, além de filtrar todos os dados provenientes dos usuários para evitar a injeção de código malicioso.</p>
+
+<h2>HMAC</h2>
+
+<p>Dentre as soluções dispostas acima, uma delas é a HMAC (Hash-based Message Authentication Code), utilizada para construir um código de autenticação de mensagem (MAC) através de uma função hash e uma chave secreta. Através deste método é possível verificar tanto a integridade como a autenticidade da mensagem.Uma aplicação prática deste método pode ser vista no sistema de autenticação da Amazon SQS.</p>
+
+<h2>Implementação</h2>
+
+<p>Abaixo é possível visualizar o esquema básico de funcionamento da criação e autenticação dos cookies utilizando HMAC.</p>
+
+<p><img src="/assets/images/security-cookies.jpg" title="Autenticação de Cookies com HMAC" alt="Alt text" /></p>
+
+<p>A implementação foi feita em PHP, e somente a parte correspondente a criação do cookie foi desenvolvida, sendo que a autenticação depende da arquitetura do sistema.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Inclui as bibliotecas necessárias</span>
+</span><span class='line'><span class="k">require</span> <span class="p">(</span><span class="s1">&#39;./lib/Browser/Browser.php&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="k">require</span> <span class="p">(</span><span class="s1">&#39;./lib/Ip.php&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Instancia o objeto para obter os dados do navegador</span>
+</span><span class='line'><span class="nv">$browser</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Browser</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Cria uma hash com a challenge do usuário</span>
+</span><span class='line'><span class="c1">//Poderia ser ainda a senha do usuário. Neste caso a challenge é uma chave criada</span>
+</span><span class='line'><span class="c1">//através do sistema de login CHAP.</span>
+</span><span class='line'><span class="c1">//http://en.wikipedia.org/wiki/Challenge-handshake_authentication_protocol</span>
+</span><span class='line'><span class="nv">$userChallenge</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="s1">&#39;sha256&#39;</span><span class="p">,</span> <span class="s2">&quot;User challenge hash&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Nome do usuário</span>
+</span><span class='line'><span class="nv">$userName</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Gera a chave que será usada para gerar a assinatura do usuário</span>
+</span><span class='line'><span class="nv">$key</span> <span class="o">=</span> <span class="nv">$browser</span><span class="o">-&gt;</span><span class="na">getBrowser</span><span class="p">()</span><span class="o">.</span>
+</span><span class='line'>     <span class="nv">$browser</span><span class="o">-&gt;</span><span class="na">getVersion</span><span class="p">()</span><span class="o">.</span>
+</span><span class='line'>     <span class="nv">$browser</span><span class="o">-&gt;</span><span class="na">getUserAgent</span><span class="p">()</span><span class="o">.</span>
+</span><span class='line'>     <span class="nv">$browser</span><span class="o">-&gt;</span><span class="na">getPlatform</span><span class="p">()</span><span class="o">.</span>
+</span><span class='line'>     <span class="nx">Ip</span><span class="o">::</span><span class="na">getIp</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Transforma a chave em hash</span>
+</span><span class='line'><span class="c1">//Essa chave precisa ser guardada em associação com o usuário para posterior</span>
+</span><span class='line'><span class="c1">//verificação de autenticidade</span>
+</span><span class='line'><span class="nv">$key</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="s1">&#39;sha256&#39;</span><span class="p">,</span> <span class="nv">$key</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Une os dados do usuário</span>
+</span><span class='line'><span class="nv">$data</span> <span class="o">=</span> <span class="nv">$userChallenge</span> <span class="o">.</span> <span class="nv">$userName</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Cria a assinatura do usuário que servirá para autenticação</span>
+</span><span class='line'><span class="nv">$signature</span> <span class="o">=</span> <span class="nb">hash_hmac</span><span class="p">(</span><span class="s2">&quot;sha256&quot;</span><span class="p">,</span> <span class="nv">$data</span><span class="p">,</span> <span class="nv">$key</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Serializa os dados do cookie</span>
+</span><span class='line'><span class="nv">$cookie</span> <span class="o">=</span> <span class="nb">serialize</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="nv">$userName</span><span class="p">,</span> <span class="nv">$signature</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Codifica o cookie</span>
+</span><span class='line'><span class="nv">$cookie</span> <span class="o">=</span> <span class="nb">base64_encode</span><span class="p">(</span><span class="nv">$cookie</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//Armazena o cookie</span>
+</span><span class='line'><span class="nx">setcookie</span><span class="p">(</span><span class="s1">&#39;remember_me&#39;</span><span class="p">,</span> <span class="nv">$cookie</span><span class="p">,</span> <span class="nb">time</span><span class="p">()</span><span class="o">+</span><span class="mi">3600</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//=============================================</span>
+</span><span class='line'><span class="c1">//Impressão dos dados</span>
+</span><span class='line'><span class="cp">?&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">&lt;table border=&quot;1&quot;&gt;</span>
+</span><span class='line'><span class="x">  &lt;tr&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;Mensagem:&lt;/td&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$data</span> <span class="cp">?&gt;</span><span class="x">&lt;/td&gt;</span>
+</span><span class='line'><span class="x">  &lt;/tr&gt;</span>
+</span><span class='line'><span class="x">  &lt;tr&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;Chave:&lt;/td&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$key</span> <span class="cp">?&gt;</span><span class="x">&lt;/td&gt;</span>
+</span><span class='line'><span class="x">  &lt;/tr&gt;</span>
+</span><span class='line'><span class="x">  &lt;tr&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;Assinatura:&lt;/td&gt;</span>
+</span><span class='line'><span class="x">      &lt;td&gt;</span><span class="cp">&lt;?</span><span class="o">=</span> <span class="nv">$signature</span> <span class="cp">?&gt;</span><span class="x">&lt;/td&gt;</span>
+</span><span class='line'><span class="x">  &lt;/tr&gt;</span>
+</span><span class='line'><span class="x">&lt;/table&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Espero que os comentários estejam claros o suficiente para a compreesão do funcionamento do código. Todos os códigos, incluindo a classe Browser, podem ser baixados aqui.</p>
+
+<p>De forma resumida, através desta implementação os cookies serão uma credencial que só será aberta com uma chave, sendo esta uma combinação de informações do computador do usuário. Isso, entretanto, não irá garantir com 100% de certeza que o cookie não poderá ser usado por outra pessoa em outro computador, mas fazer isso será muito mais complicado. A implementação também limita a &#8220;memória&#8221; do sistema de login, já que ele usa o IP do usuário como parte da chave para autenticar a credencial. Ao menos os dados do usuário estarão a salvo, desde que outras precauções citadas neste artigo também sejam tomadas.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Maycon Bordin</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-17T21:09:00-02:00" pubdate data-updated="true">Feb 17<span>th</span>, 2011</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/php/'>PHP</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://mayconbordin.github.com/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/" data-via="" data-counturl="http://mayconbordin.github.com/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2010/08/24/jcalendar-no-netbeans/" title="Previous Post: JCalendar no NetBeans">&laquo; JCalendar no NetBeans</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/" title="Next Post: StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento">StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/">geo.js: Geolocation and Geocoding (pure) JavaScript library</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/">Obter a hora certa via Internet com Java</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/06/03/contornando-o-cache-do-hibernate/">Contornando o Cache do Hibernate</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/">StrutsTool: Desenvolvendo Aplicações em Struts sem Sofrimento</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/">Melhorando a segurança dos Cookies</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Maycon Bordin -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

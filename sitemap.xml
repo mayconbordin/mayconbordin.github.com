@@ -2,16 +2,50 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>
+            http://mayconbordin.github.com/blog/2010/07/09/alguns-comandos-sql-uteis-em-oracle/
+        </loc>
+        <lastmod>2012-08-30T19:05:33-03:00</lastmod>
+    </url>
+    <url>
+        <loc>http://mayconbordin.github.com/blog/2010/08/24/jcalendar-no-netbeans/</loc>
+        <lastmod>2012-08-30T18:56:11-03:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://mayconbordin.github.com/blog/2011/02/17/melhorando-a-seguranca-dos-cookies/
+        </loc>
+        <lastmod>2012-08-30T15:50:07-03:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://mayconbordin.github.com/blog/2011/05/04/strutstool-desenvolvendo-aplicacoes-em-struts-sem-sofrimento/
+        </loc>
+        <lastmod>2012-08-30T15:26:43-03:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://mayconbordin.github.com/blog/2011/06/03/contornando-o-cache-do-hibernate/
+        </loc>
+        <lastmod>2012-08-30T11:43:19-03:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://mayconbordin.github.com/blog/2011/06/23/obter-a-hora-certa-via-internet-com-java/
+        </loc>
+        <lastmod>2012-08-30T11:41:00-03:00</lastmod>
+    </url>
+    <url>
+        <loc>
             http://mayconbordin.github.com/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/
         </loc>
-        <lastmod>2012-08-30T11:30:58-03:00</lastmod>
+        <lastmod>2012-08-30T11:40:42-03:00</lastmod>
     </url>
     <url>
         <loc>http://mayconbordin.github.com/blog/archives/</loc>
-        <lastmod>2012-08-30T11:30:58-03:00</lastmod>
+        <lastmod>2012-08-30T19:05:33-03:00</lastmod>
     </url>
     <url>
         <loc>http://mayconbordin.github.com/blog/</loc>
-        <lastmod>2012-08-30T11:30:58-03:00</lastmod>
+        <lastmod>2012-08-30T19:05:33-03:00</lastmod>
     </url>
 </urlset>
