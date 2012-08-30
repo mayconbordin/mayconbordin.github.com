@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://mayconbordin.github.com/atom.xml" rel="self"/>
   <link href="http://mayconbordin.github.com/"/>
-  <updated>2012-08-30T11:04:37-03:00</updated>
+  <updated>2012-08-30T11:07:21-03:00</updated>
   <id>http://mayconbordin.github.com/</id>
   <author>
     <name><![CDATA[Maycon Bordin]]></name>
@@ -12,5 +12,14 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[geo.js: Geolocation and Geocoding (pure) JavaScript library]]></title>
+    <link href="http://mayconbordin.github.com/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/"/>
+    <updated>2012-01-15T15:02:00-02:00</updated>
+    <id>http://mayconbordin.github.com/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library</id>
+    <content type="html"><![CDATA[<p>teste</p>
+]]></content>
+  </entry>
   
 </feed>
