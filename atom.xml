@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://mayconbordin.github.com/atom.xml" rel="self"/>
   <link href="http://mayconbordin.github.com/"/>
-  <updated>2012-08-30T11:07:21-03:00</updated>
+  <updated>2012-08-30T11:32:31-03:00</updated>
   <id>http://mayconbordin.github.com/</id>
   <author>
     <name><![CDATA[Maycon Bordin]]></name>
@@ -18,7 +18,313 @@
     <link href="http://mayconbordin.github.com/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library/"/>
     <updated>2012-01-15T15:02:00-02:00</updated>
     <id>http://mayconbordin.github.com/blog/2012/01/15/geo-dot-js-geolocation-and-geocoding-pure-javascript-library</id>
-    <content type="html"><![CDATA[<p>teste</p>
+    <content type="html"><![CDATA[<p>Some people may know the <a href="http://code.google.com/p/geo-location-javascript/">geo-location-javascript</a>, it supports, besides W3C Geolocation API, several other devices and platforms. I&#8217;ve used it before, but I always thought it could do better. I mean, it could be more flexible, support more alternatives, like GeoIP.</p>
+
+<p>So I started to search for alternative libraries, until I found <a href="https://github.com/rmoriz/locate_me">locate_me</a>, this library doesn&#8217;t support so many platforms as geo-location-javascript, but it has support for providers, in the way that I can write my own geolocation providers. But it has some drawbracks, like not following the W3C Geolocation interface and not offering the polling functions (watchPosition and clearWatch). It also relies on Prototype, although some people don&#8217;t see this as a disadvantage.</p>
+
+<p>As I could not find any other library that could fulfill my needs, I built my own. It has support for all the platforms supported by geo-location-javascript, plus geoip services, and it also support custom location providers. In addition, it support geocoding providers, so that when you receive the device&#8217;s location, you can geocode it to obtain its address.</p>
+
+<p>This library has the same interface that of W3C Geolocation API, including the polling functionality. The polling functions are provided by the native device&#8217;s APIs, when enabled, and when the API has no support for it, the library uses his own implementation of watchPosition and clearWatch.</p>
+
+<h2>Supported platforms</h2>
+
+<ul>
+<li>W3C Geolocation API</li>
+<li>iOS</li>
+<li>Android</li>
+<li>BlackBerry OS</li>
+<li>Browsers with Google Gears support</li>
+<li>Nokia Web Run-Time</li>
+<li>webOS Application Platform</li>
+<li>Torch Mobile Iris Browser</li>
+<li>Mozilla Geode</li>
+</ul>
+
+
+<p><strong>GeoIP Services</strong></p>
+
+<ul>
+<li>freegeoip.net</li>
+<li>geoip.pidgets.com</li>
+<li>geoplugin.com</li>
+</ul>
+
+
+<p><strong>Reverse Geocoding Service</strong></p>
+
+<ul>
+<li>Google Geocoding API</li>
+<li>GeoNames</li>
+<li>Nominatim OpenStreetMap</li>
+</ul>
+
+
+<h2>Getting Started</h2>
+
+<p>Include the gears_init.js, util.js and geo.js libraries in your html:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://code.google.com/apis/gears/gears_init.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/util.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;js/geo.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now you can start the library:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is the default starter, the library will try to find the first available location provider to use. But you can give a provider to the initializer, as a string or object:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="s1">&#39;W3C&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//or</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="k">new</span> <span class="nx">Geo</span><span class="p">.</span><span class="nx">LocationProvider</span><span class="p">.</span><span class="nx">W3C</span><span class="p">());</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To get the user location you just do this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">Geo</span><span class="p">.</span><span class="nx">init</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Geo</span><span class="p">.</span><span class="nx">getCurrentPosition</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Error &quot;</span> <span class="o">+</span> <span class="nx">e</span><span class="p">.</span><span class="nx">code</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nx">e</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Methods</h2>
+
+<p>The Geo object will provide, besides the init(), the following methods:</p>
+
+<ul>
+<li><code>getCurrentPosition(successCallback, errorCallback, options)</code> try to get the current position of the device, passing it to the successCallback. In case of error, errorCcallback is called.</li>
+<li><code>watchPosition(successCallback, errorCallback, options)</code> the arguments work the same way as before. But this method will call the successCallback every time the device&#8217;s position changes. It also returns an ID corresponding to the watcher. Some APIs have this method natively implemented, in these cases this library just redirects the call, but if the API has no support, the library uses an own implementation.</li>
+<li><code>clearWatch(watchId)</code> stops the watcher created with the method above.</li>
+</ul>
+
+
+<p>The options argument, is an object that can have one or more of those attributes:</p>
+
+<ul>
+<li>boolean enableHighAccuracy</li>
+<li>long timeout</li>
+<li>long maximumAge</li>
+</ul>
+
+
+<p>Other methods:</p>
+
+<ul>
+<li><code>getIPAddress()</code> returns the device&#8217;s IP address.</li>
+<li><code>autoSetLocationProvider()</code> automatically chooses the location provider.</li>
+<li><code>setLocationProvider(p)</code> set the location provider to be used. Can be, as in the init() a string or object instance.</li>
+</ul>
+
+
+<h2>Create your own Location Provider</h2>
+
+<p>This library has been built to enable the usage of custom location providers, the following example shows how to do that:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// This is just a dummy provider</span>
+</span><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">LocationProvider</span><span class="p">.</span><span class="nx">MyProvider</span> <span class="o">=</span> <span class="nx">Geo</span><span class="p">.</span><span class="nx">LocationProvider</span><span class="p">.</span><span class="nx">Base</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'><span class="nx">getCurrentPosition</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">successCallback</span><span class="p">,</span> <span class="nx">errorCallback</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">successCallback</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">parseResult</span><span class="p">({</span>
+</span><span class='line'>          <span class="nx">latitude</span><span class="o">:</span> <span class="o">-</span><span class="mi">37</span><span class="p">,</span>
+</span><span class='line'>          <span class="nx">longitude</span><span class="o">:</span> <span class="mi">11</span>
+</span><span class='line'>       <span class="p">}));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">LocationProvider</span><span class="p">.</span><span class="nx">MyProvider</span><span class="p">.</span><span class="nx">available</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="s1">&#39;MyProvider&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Your location providers must be placed before the Geo.init() in order to be included in the provider auto selection. They also need to be created as an attribute of Geo.LocationProvider object to be registered.</p>
+
+<h2>Default Providers</h2>
+
+<p>This is the list of the default providers:</p>
+
+<ul>
+<li>W3C</li>
+<li>Gears</li>
+<li>Bondi</li>
+<li>Mojo</li>
+<li>Nokia</li>
+<li>FreeGeoIp</li>
+<li>GeoIpPidgets</li>
+<li>GeoPlugin</li>
+</ul>
+
+
+<h2>Reverse Geocoding</h2>
+
+<p>This library also support (reverse) geocoding providers. The Geo.Position object has a method for reversing geocoding his coordinates:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">init</span><span class="p">();</span>
+</span><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">getCurrentPosition</span><span class="p">(</span><span class="nx">success_callback</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">success_callback</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">geocode</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When you call the geocode() method, the callback is optional, because the function will set the address retrieved by geocoding in the p object. Although there is a Geo.Address object, it is not used when doing geocoding because the Google Geocoding API can return several address components (<a href="http://code.google.com/intl/en/apis/maps/documentation/geocoding/#Types">see</a>).</p>
+
+<p>Currently there is three geocoding providers available (&#8216;Google&#8217;, &#8216;GeoNames&#8217;, &#8216;Nominatim&#8217;). When calling the geocode() method, you can also provide to the function the geocoding provider that you would like to use:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">geocode</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">);</span>
+</span><span class='line'><span class="p">},</span> <span class="s1">&#39;Google&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// or</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">p</span><span class="p">.</span><span class="nx">geocode</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">);</span>
+</span><span class='line'><span class="p">},</span> <span class="k">new</span> <span class="nx">Geo</span><span class="p">.</span><span class="nx">CodingProvider</span><span class="p">.</span><span class="nx">GeoNames</span><span class="p">());</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In order to use the Google Geocoding API you need to include the GMaps library in your html:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;http://maps.google.com/maps/api/js?sensor=false&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And if you&#8217;re using the GeoNames service, you need to <a href="http://www.geonames.org/login">create an account</a>, login into your account and <a href="http://www.geonames.org/manageaccount">enable free web services</a>, and then inform the library what&#8217;s your username:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">Geo</span><span class="p">.</span><span class="nx">init</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// provide your username to use the geonames web service</span>
+</span><span class='line'>    <span class="nx">Geo</span><span class="p">.</span><span class="nx">CodingProvider</span><span class="p">.</span><span class="nx">GeoNames</span><span class="p">.</span><span class="nx">username</span> <span class="o">=</span> <span class="s1">&#39;myusername&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">Geo</span><span class="p">.</span><span class="nx">getCurrentPosition</span><span class="p">(</span><span class="nx">success_callback</span><span class="p">,</span> <span class="nx">error_callback</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">success_callback</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">p</span><span class="p">.</span><span class="nx">geocode</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+</span><span class='line'>       <span class="p">},</span> <span class="s1">&#39;GeoNames&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">error_callback</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">p</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can also write your own geocoder:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">CodingProvider</span><span class="p">.</span><span class="nx">MyGeocoder</span> <span class="o">=</span> <span class="nx">Class</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+</span><span class='line'><span class="c1">// this is the method called when geocode the Geo.Position object p</span>
+</span><span class='line'>    <span class="nx">geocode</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>       <span class="c1">// call the geocoding service using jsonp or through a proxy (ajax)</span>
+</span><span class='line'>       <span class="c1">// and then if there is a callback return the result</span>
+</span><span class='line'>       <span class="k">if</span> <span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="nx">callback</span><span class="p">(</span><span class="nx">results</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>       <span class="c1">// you need also to set the address in the Geo.Position object p</span>
+</span><span class='line'>       <span class="nx">p</span><span class="p">.</span><span class="nx">address</span> <span class="o">=</span> <span class="nx">results</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// here you check if the service is available</span>
+</span><span class='line'><span class="nx">Geo</span><span class="p">.</span><span class="nx">CodingProvider</span><span class="p">.</span><span class="nx">MyGeocoder</span><span class="p">.</span><span class="nx">available</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Like the location providers, the geocoding providers must be placed before the Geo.init() call.</p>
+
+<p><a href="https://github.com/mayconbordin/geo.js/zipball/master">Download</a> | <a href="https://github.com/mayconbordin/geo.js">Github</a></p>
 ]]></content>
   </entry>
   
